@@ -1,0 +1,10 @@
+<article (click)="onSelectMeme()">
+  <div class="image-container">
+    <img
+      src="/api/memes/{{ meme.id }}/thumbnail"
+      alt="{{ meme.description }}"
+      title="{{ meme.description }}"
+    />
+  </div>
+  <p>{{ meme.fileName }}</p>
+</article>

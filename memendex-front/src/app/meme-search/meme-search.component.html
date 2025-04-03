@@ -1,0 +1,12 @@
+<form (ngSubmit)="submit()">
+  <div class="form-group">
+    <label for="query">Query: </label>
+    <input
+      name="query"
+      [formControl]="query"
+      (keydown)="onQueryChanged($event)"
+    />
+  </div>
+
+  <input type="submit" value="Search!" />
+</form>

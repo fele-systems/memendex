@@ -1,0 +1,35 @@
+article {
+  height: 300px;
+  width: 170px;
+  display: block;
+  /* margin: 10px 25px; */
+  background-color: gray;
+}
+
+article .image-container {
+  height: 210px;
+  width: 170px;
+  display: flex;
+  background-color: dimgray;
+}
+
+article .image-container img {
+  /* max-height: 200px;
+  max-width: 160px; */
+  vertical-align: middle;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: 50% 50%;
+  width: 160px;
+  padding: 0 5px;
+}
+
+article > p {
+  width: 100%;
+  text-align: center;
+  line-height: 24px;
+  vertical-align: center;
+  margin: 0px;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}

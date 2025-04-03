@@ -1,0 +1,28 @@
+.image-container {
+  width: 100%;
+  display: flexbox;
+}
+
+img {
+  vertical-align: middle;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: 50% 50%;
+  width: 100%;
+}
+
+h2 {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+textarea {
+  width: 100%;
+  border-radius: 5px;
+  display: flexbox;
+  /* resize: none; */
+  white-space: pre-wrap;
+  min-height: 100px;
+  flex: 1;
+  box-sizing: border-box;
+}

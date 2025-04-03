@@ -1,0 +1,15 @@
+<!-- <textarea
+  [readonly]="readOnly()"
+  [rows]="minLines()"
+  (keyup)="onKeyUp($event)"
+  #textArea
+> -->
+<div class="grow-wrap">
+  <textarea
+    onInput="this.parentNode.dataset.replicatedValue = this.value"
+    (change)="onChange(nativeTextArea.value)"
+    (focus)="onTouched()"
+    #textArea
+  >
+  </textarea>
+</div>

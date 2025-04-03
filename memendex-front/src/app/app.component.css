@@ -1,0 +1,15 @@
+.upload-center-container {
+  width: 100%;
+}
+
+.gallery-details-grid {
+  display: grid;
+  grid-template-columns: auto 450px;
+}
+
+.gallery-view {
+}
+
+.details-view {
+  height: 100%px;
+}

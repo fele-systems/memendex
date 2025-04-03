@@ -1,0 +1,12 @@
+@if (meme) {
+  <div class="image-container">
+    <img src="/api/memes/{{ meme.id }}/image" />
+  </div>
+  <h2>{{ meme.fileName }}</h2>
+  <textarea readonly="true" [innerHTML]="meme.description"></textarea>
+} @else {
+  <div class="image-container">
+    <img src="/meme-placeholder.jpg" />
+  </div>
+  <p>Select a meme from the left panel to see or edit its details</p>
+}

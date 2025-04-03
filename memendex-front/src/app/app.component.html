@@ -1,0 +1,25 @@
+<main class="main">
+  <h1>Memendex - Your meme index</h1>
+
+  <div class="upload-center-container">
+    <app-meme-upload (memeUploaded)="onMemeUploaded($event)" />
+    <app-meme-search
+      (searchCompleted)="onSearchCompleted($event)"
+      (resetSearch)="onSearchReseted()"
+    />
+  </div>
+
+  <br />
+  <hr />
+
+  <div class="gallery-details-grid">
+    <div class="gallery-view">
+      <app-meme-gallery [memes]="memes()" (select)="onSelectMeme($event)" />
+    </div>
+    <div class="details-view">
+      <app-meme-details [meme]="selectedMeme" />
+    </div>
+  </div>
+</main>
+
+<router-outlet />

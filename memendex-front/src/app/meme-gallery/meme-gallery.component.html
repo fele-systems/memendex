@@ -1,0 +1,5 @@
+<section class="meme-gallery">
+  @for (meme of memes(); track meme.id) {
+    <app-meme-preview [meme]="meme" (select)="onSelectMeme(meme)" />
+  }
+</section>
