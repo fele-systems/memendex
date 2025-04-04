@@ -31,6 +31,7 @@ export class DescriptionTextAreaComponent
   minLines = input(3);
   readOnly = input(false);
   numberOfLines = signal(0);
+  initialValue = input<string | undefined>(undefined);
 
   // ControlValueAcessor callbacks
   onChange = (description: string) => {};
@@ -38,11 +39,16 @@ export class DescriptionTextAreaComponent
 
   constructor(private _renderer: Renderer2) {}
 
-  writeValue(description: string): void {
-    this._renderer.setProperty(this.nativeTextArea, "value", description);
-    if (this.nativeTextArea)
+  onInput() {
+    if (this.nativeTextArea) {
       this.nativeTextArea.parentElement!.dataset["replicatedValue"] =
         this.nativeTextArea.value;
+      this.onChange(this.nativeTextArea.value);
+    }
+  }
+
+  writeValue(description: string): void {
+    this._renderer.setProperty(this.nativeTextArea, "value", description);
   }
 
   registerOnChange(onChange: any): void {

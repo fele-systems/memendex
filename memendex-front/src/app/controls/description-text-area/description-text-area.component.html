@@ -5,11 +5,7 @@
   #textArea
 > -->
 <div class="grow-wrap">
-  <textarea
-    onInput="this.parentNode.dataset.replicatedValue = this.value"
-    (change)="onChange(nativeTextArea.value)"
-    (focus)="onTouched()"
-    #textArea
-  >
+  <textarea (input)="onInput()" (focus)="onTouched()" #textArea>
+    <!-- onInput="this.parentNode.dataset.replicatedValue = this.value; onChange(this.value)" -->
   </textarea>
 </div>

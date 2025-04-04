@@ -1,17 +1,15 @@
 package com.systems.fele.memendex_server.meme;
 
 import com.systems.fele.memendex_server.MemendexProperties;
+import com.systems.fele.memendex_server.exception.NoSuchMemeError;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,41 +40,29 @@ public class MemeController {
         return memeRepository.powerSearch(query);
     }
 
-    // TODO Send correct media type
-    @GetMapping(value = "/{id}/thumbnail", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] thumbnail(@PathVariable("id") long id) throws IOException {
-        var thumb = memeService.generateThumbnail(memeRepository.list().stream().filter(meme -> meme.id() == id).findFirst().orElseThrow());
-        var bos = new ByteArrayOutputStream();
-        ImageIO.write(thumb, "png", bos);
-        return bos.toByteArray();
+    @GetMapping(value = "/{id}/thumbnail")
+    public void thumbnail(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
+        final var mediaType = memeService.getThumbnailTo(id, response.getOutputStream());
+        response.setContentType(mediaType.toString());
+        response.setStatus(200);
     }
 
-    // TODO Send correct media type
-    @GetMapping(value = "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] image(@PathVariable("id") long id) throws IOException {
-        var thumb = memeService.getImage(memeRepository.list().stream().filter(meme -> meme.id() == id).findFirst().orElseThrow());
-        var bos = new ByteArrayOutputStream();
-        ImageIO.write(thumb, "png", bos);
-        System.out.println(memeRepository.list().stream().filter(meme -> meme.id() == id).findFirst().orElseThrow().description());
-        return bos.toByteArray();
+    @GetMapping(value = "/{id}/image")
+    public void image(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
+        final var mediaType = memeService.getImageTo(id, response.getOutputStream());
+        response.setContentType(mediaType.toString());
+        response.setStatus(200);
     }
 
     @PostMapping(value = "upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public Meme upload(@RequestPart("meme") MultipartFile meme, @RequestPart("description") String description, HttpServletResponse response) throws IOException {
-        final var fileName = Objects.requireNonNull(meme.getOriginalFilename());
-        final var targetFile = new File(memendexProperties.uploadLocation(), fileName);
-
-        try (FileOutputStream outputStream = new FileOutputStream(targetFile)) {
-            var inputStream = meme.getInputStream();
-            var buffer = new byte[256];
-            int length = 0;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-            }
-        } catch (FileNotFoundException e) {
-            response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Could not create file in " + memendexProperties.uploadLocation());
-        }
-
-        return memeRepository.insert(new Meme(0, fileName, description));
+        return memeService.saveMeme(description, meme);
     }
+
+    @PatchMapping(value = "edit", consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public Meme edit(@RequestBody Meme meme){
+        memeRepository.edit(meme);
+        return memeRepository.findById(meme.id()).orElseThrow(NoSuchMemeError::new);
+    }
+
 }

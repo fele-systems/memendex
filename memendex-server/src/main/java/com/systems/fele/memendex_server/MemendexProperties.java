@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 // @Configuration(proxyBeanMethods=false)
 @ConfigurationProperties("memendex")
 public record MemendexProperties(
-        String uploadLocation
+        String uploadLocation,
+        String cache
 ) {
 }
