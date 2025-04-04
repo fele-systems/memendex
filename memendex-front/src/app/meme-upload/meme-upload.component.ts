@@ -25,14 +25,7 @@ import { Meme } from "../../models/Meme";
 export class MemeUploadComponent {
   uploadForm = new FormGroup({
     meme: new FormControl(""),
-    description: new FormControl<string>(`me ajuda a mecher no excel
-ok
-anos depois
-como diminui a fonte
-
-vai la em cima, e clica nos numeros que tao do lado da fonte
-
-nao achei`),
+    description: new FormControl<string>(""),
   });
   file: File | undefined;
   @Output() memeUploaded = new EventEmitter<Meme>();
