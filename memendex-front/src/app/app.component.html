@@ -14,10 +14,20 @@
 
   <div class="gallery-details-grid">
     <div class="gallery-view">
-      <app-meme-gallery [memes]="memes()" (select)="onSelectMeme($event)" />
+      <!-- [totalCount]="totalMemes"
+        [pageSize]="defaultPageSize"
+        [currentPage]="1" -->
+      <app-meme-gallery
+        [data]="memes()"
+        (select)="onSelectMeme($event)"
+        (requestPage)="fetchMemes(defaultPageSize, $event)"
+      />
     </div>
     <div class="details-view">
-      <app-meme-details [meme]="selectedMeme" />
+      <app-meme-details
+        [meme]="selectedMeme"
+        (memeUpdated)="memeUpdated($event)"
+      />
     </div>
   </div>
 </main>

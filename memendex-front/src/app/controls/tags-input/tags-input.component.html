@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="fake-input">
+    @for (tag of tags(); track tag) {
+      <div class="tag" (click)="deleteTag($event)">{{ tag }}</div>
+    }
+
+    <input
+      (keydown.enter)="addTag($event)"
+      (focus)="onFocus($event)"
+      (input)="onInput($event)"
+      type="text"
+    />
+    <!-- (focusout)="onBlur($event)" -->
+  </div>
+
+  <div (click)="onBlur($event)" class="autocomplete-background"></div>
+
+  <!-- Autocompletion box -->
+  <div class="autocomplete">
+    <span class="hint">Suggested tags</span>
+    @for (stats of autoCompletion(); track stats.tag) {
+      <div class="stat" (click)="acceptSuggestion($event)">
+        <div class="stat-tag">{{ stats.tag }}</div>
+        <div class="count">{{ stats.count }}</div>
+      </div>
+    }
+  </div>
+</div>

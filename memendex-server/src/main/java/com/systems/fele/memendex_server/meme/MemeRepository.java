@@ -2,6 +2,9 @@ package com.systems.fele.memendex_server.meme;
 
 import com.systems.fele.memendex_server.MemendexProperties;
 import com.systems.fele.memendex_server.exception.NoSuchMemeError;
+import com.systems.fele.memendex_server.model.Meme;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import org.javatuples.Triplet;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,9 +17,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -67,17 +68,49 @@ public class MemeRepository {
         return new Meme(rs.getLong("id"), rs.getString("filename"), rs.getString("description"));
     }
 
-    // TODO: Implement pagination
+    @Deprecated
     public List<Meme> list() {
         return jdbcTemplate.query("SELECT * FROM MEMES",
                 MemeRepository::mapRowToMeme);
     }
 
-    public List<Meme> powerSearch(String query) {
-        return jdbcTemplate.query("SELECT * FROM MEMES",
-                MemeRepository::mapRowToMeme).stream()
-                .filter(meme -> meme.fileName().toLowerCase().contains(query) || meme.description().toLowerCase().contains(query))
-                .toList();
+    public int getTotalCount() {
+        return Objects.requireNonNull(jdbcTemplate.queryForObject("SELECT COUNT(id) FROM MEMES", Integer.class));
+    }
+
+    public List<Meme> listPaginated(int pageNum, int pageSize) {
+        if (pageNum == 0) pageNum = 1;
+
+        return jdbcTemplate.query("SELECT * FROM MEMES OFFSET ? FETCH FIRST ? ROWS ONLY",
+                MemeRepository::mapRowToMeme,
+                (pageNum - 1) * pageSize,
+                pageSize);
+    }
+
+    /**
+     * Executes a fuzzy search in memes by using both filename and description fields.
+     * <p></p>
+     * Notes:
+     * pageSize + 1 elements will be queried. This is used to guess if it has reached the
+     * end of our query. So when calculating the has next property, check if the size of
+     * the returned list is greater than the requested. Also remember to trim the result
+     * in this case.
+     * @param query The search term
+     * @param pageNum Current page to fetch
+     * @param pageSize Maximum number of elements to return + 1. See notes.
+     * @return Memes filtered
+     */
+    public List<Meme> powerSearch(String query, int pageNum, int pageSize) {
+        return jdbcTemplate.query("""
+                SELECT * FROM MEMES
+                WHERE TOKEN_SET_PARTIAL_RATIO(DESCRIPTION, ?) > 85 OR TOKEN_SET_PARTIAL_RATIO(FILENAME, ?) > 85
+                OFFSET ? FETCH FIRST ? ROWS ONLY
+                """,
+                MemeRepository::mapRowToMeme,
+                query,
+                query,
+                (pageNum - 1) * pageSize,
+                pageSize + 1);
     }
 
     /**

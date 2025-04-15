@@ -1,0 +1,120 @@
+.container {
+  position: relative;
+}
+
+div.fake-input {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 26px;
+
+  border-radius: 4px;
+  border: 1px solid gray;
+  padding: 3px;
+}
+
+input {
+  line-height: 24px;
+  flex: 1;
+  min-width: 200px;
+  border: 0;
+  appearance: none;
+  outline: none;
+  background-color: transparent;
+}
+
+.focus div.fake-input {
+  border-width: 3px 3px 0px;
+  border-color: gray;
+  border-style: double;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  /* box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 3px 6px,
+    rgba(0, 0, 0, 0.23) 0px 3px 6px; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+}
+
+div.tag {
+  margin-right: 8px;
+  padding: 0 4px;
+  background-color: #ddd;
+  border-radius: 4px;
+  height: 24px;
+  display: flex;
+}
+
+div.tag:hover {
+  color: white;
+  background-color: #555;
+  text-decoration: line-through;
+}
+
+.autocomplete-background {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  right: 0;
+
+  border-radius: 0px 0px 4px 4px;
+  border-width: 0px 3px 3px;
+  border-color: gray;
+  border-style: double;
+  padding: 3px;
+  display: none;
+  z-index: 3;
+  background-color: white;
+}
+
+.focus .autocomplete-background {
+  display: block;
+}
+
+.focus .autocomplete {
+  display: block;
+}
+
+.autocomplete .stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 4px;
+}
+
+.autocomplete .stat:hover {
+  color: white;
+  background-color: #ddd;
+}
+
+.autocomplete .stat > div {
+  flex: 1;
+}
+.autocomplete .stat > .stat-tag {
+  flex-grow: 8;
+}
+.autocomplete .stat > .count {
+  flex-grow: 1;
+  text-align: right;
+}
+
+.autocomplete .hint {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+  display: inline-block;
+}
