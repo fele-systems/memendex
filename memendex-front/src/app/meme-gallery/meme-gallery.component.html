@@ -1,5 +1,32 @@
+<div>
+  <button
+    [disabled]="currentPage == 1"
+    (click)="onRequestPage(currentPage - 1)"
+  >
+    &lt; Previous
+  </button>
+  <span>Current page: {{ currentPage }}</span>
+  <button [disabled]="!hasNext" (click)="onRequestPage(currentPage + 1)">
+    Next &gt;
+  </button>
+</div>
+
+<p>{{ memes.length }} memes</p>
 <section class="meme-gallery">
-  @for (meme of memes(); track meme.id) {
+  @for (meme of memes; track meme.id) {
     <app-meme-preview [meme]="meme" (select)="onSelectMeme(meme)" />
   }
 </section>
+
+<div>
+  <button
+    [disabled]="currentPage == 1"
+    (click)="onRequestPage(currentPage - 1)"
+  >
+    &lt; Previous
+  </button>
+  <span>Current page: {{ currentPage }}</span>
+  <button [disabled]="!hasNext" (click)="onRequestPage(currentPage + 1)">
+    Next &gt;
+  </button>
+</div>

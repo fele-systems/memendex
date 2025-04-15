@@ -2,16 +2,17 @@ package com.systems.fele.memendex_server.meme;
 
 import com.systems.fele.memendex_server.MemendexProperties;
 import com.systems.fele.memendex_server.exception.NoSuchMemeError;
+import com.systems.fele.memendex_server.model.Meme;
+import com.systems.fele.memendex_server.model.MemeDetailed;
+import com.systems.fele.memendex_server.model.PaginatedResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import java.io.*;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/memes")
@@ -27,9 +28,27 @@ public class MemeController {
         this.memeRepository = memeRepository;
     }
 
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public MemeDetailed getMeme(@PathVariable("id") long id) {
+        return memeService.enrich(memeService.getMeme(id).orElseThrow(NoSuchMemeError::new));
+    }
+
     @GetMapping("list")
-    public List<Meme> list() {
-        return memeRepository.list();
+    public PaginatedResponse<MemeDetailed> list(@RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "size", required = false, defaultValue = "100") int size) {
+        var memes = memeRepository.listPaginated(page, size);
+        if (page == 0) page = 1;
+        if (size < 1 || size > 1000) size = 100;
+        var totalCount = memeRepository.getTotalCount();
+        var hasNext = (page - 1) * size + memes.size() < totalCount;
+
+        return new PaginatedResponse<>(
+                memes.stream().map(memeService::enrich).toList(),
+                memes.size(),
+                totalCount,
+                size,
+                page,
+                hasNext
+        );
     }
 
     @GetMapping("search")
@@ -60,9 +79,9 @@ public class MemeController {
     }
 
     @PatchMapping(value = "edit", consumes = { MediaType.APPLICATION_JSON_VALUE })
-    public Meme edit(@RequestBody Meme meme){
-        memeRepository.edit(meme);
-        return memeRepository.findById(meme.id()).orElseThrow(NoSuchMemeError::new);
+    public MemeDetailed edit(@RequestBody MemeDetailed meme){
+        memeService.updateMeme(meme);
+        return memeService.enrich(memeService.getMeme(meme.id()).orElseThrow(NoSuchMemeError::new));
     }
 
 }

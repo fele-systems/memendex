@@ -6,9 +6,18 @@
 
     <h2>{{ meme()!.fileName }}</h2>
 
+    <label for="description">Description:</label>
     <app-description-text-area
+      name="description"
       [formControl]="description"
     ></app-description-text-area>
+
+    <br />
+
+    <label for="tags">Tags:</label>
+    <app-tags-input name="tags" [formControl]="tags"></app-tags-input>
+
+    <br />
 
     <input type="submit" value="Edit" />
   </form>

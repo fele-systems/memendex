@@ -2,6 +2,9 @@ package com.systems.fele.memendex_server.meme;
 
 import com.systems.fele.memendex_server.MemendexProperties;
 import com.systems.fele.memendex_server.exception.NoSuchMemeError;
+import com.systems.fele.memendex_server.model.Meme;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import org.javatuples.Triplet;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,9 +17,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -67,16 +68,33 @@ public class MemeRepository {
         return new Meme(rs.getLong("id"), rs.getString("filename"), rs.getString("description"));
     }
 
-    // TODO: Implement pagination
+    @Deprecated
     public List<Meme> list() {
         return jdbcTemplate.query("SELECT * FROM MEMES",
                 MemeRepository::mapRowToMeme);
     }
 
+    public int getTotalCount() {
+        return Objects.requireNonNull(jdbcTemplate.queryForObject("SELECT COUNT(id) FROM MEMES", Integer.class));
+    }
+
+    public List<Meme> listPaginated(int pageNum, int pageSize) {
+        if (pageNum == 0) pageNum = 1;
+
+        return jdbcTemplate.query("SELECT * FROM MEMES OFFSET ? FETCH FIRST ? ROWS ONLY",
+                MemeRepository::mapRowToMeme,
+                (pageNum - 1) * pageSize,
+                pageSize);
+    }
+
     public List<Meme> powerSearch(String query) {
+
         return jdbcTemplate.query("SELECT * FROM MEMES",
                 MemeRepository::mapRowToMeme).stream()
-                .filter(meme -> meme.fileName().toLowerCase().contains(query) || meme.description().toLowerCase().contains(query))
+                .map(meme -> Triplet.with(meme, FuzzySearch.tokenSetPartialRatio(meme.fileName(), query), FuzzySearch.tokenSetPartialRatio(meme.description(), query)))
+                .filter(trip -> trip.getValue1() > 85 || trip.getValue2() > 85)
+                .sorted(Comparator.comparing(Triplet::getValue2))
+                .map(Triplet::getValue0)
                 .toList();
     }
 
