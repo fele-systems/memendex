@@ -19,3 +19,5 @@ create table TAGS_TO_MEMES (
   FOREIGN KEY (MEME_ID) REFERENCES MEMES(ID),
   FOREIGN KEY (TAG_ID) REFERENCES TAGS(ID)
 );
+
+create alias TOKEN_SET_PARTIAL_RATIO FOR "me.xdrop.fuzzywuzzy.FuzzySearch.tokenSetPartialRatio"

@@ -10,4 +10,7 @@ public record PaginatedResponse<T>(
     int page,
     boolean hasNext
 ){
+    public static <T> PaginatedResponse<T> empty() {
+        return new PaginatedResponse<>(List.of(), 0, 0, 0, 0, false);
+    }
 }

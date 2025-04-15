@@ -52,11 +52,32 @@ public class MemeController {
     }
 
     @GetMapping("search")
-    public List<Meme> search(@RequestParam String query) {
+    public PaginatedResponse<MemeDetailed> search(@RequestParam String query, @RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "size", required = false, defaultValue = "100") int size) {
         if (query.length() < 3)
-            return List.of();
+            return PaginatedResponse.empty();
 
-        return memeRepository.powerSearch(query);
+        if (page == 0) page = 1;
+        if (size < 1 || size > 1000) size = 100;
+
+        var memes = memeRepository.powerSearch(query, page, size);
+        var totalCount = -1;
+        boolean hasNext;
+
+        if (memes.size() > size) {
+            hasNext = true;
+            memes = memes.subList(0, size);
+        } else {
+            hasNext = false;
+        }
+
+        return new PaginatedResponse<>(
+                memes.stream().map(memeService::enrich).toList(),
+                memes.size(),
+                totalCount,
+                size,
+                page,
+                hasNext
+        );
     }
 
     @GetMapping(value = "/{id}/thumbnail")

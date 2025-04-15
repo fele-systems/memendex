@@ -65,15 +65,15 @@ export class AppComponent {
     this.selectedMeme = meme;
   }
 
-  onSearchCompleted(memes: Meme[]) {
-    //this.memes.set(memes);
+  onSearchCompleted(memes: PaginatedResponse<Meme>) {
+    this.memes.set(memes);
   }
 
   onMemeUploaded(meme: Meme) {
-    //this.memes.update((values) => [...values, meme]);
+    this.fetchMemes(this.defaultPageSize, 1);
   }
 
   onSearchReseted() {
-    //this.fetchMemes(this.defaultPageSize, 1);
+    this.fetchMemes(this.defaultPageSize, 1);
   }
 }

@@ -87,15 +87,30 @@ public class MemeRepository {
                 pageSize);
     }
 
-    public List<Meme> powerSearch(String query) {
-
-        return jdbcTemplate.query("SELECT * FROM MEMES",
-                MemeRepository::mapRowToMeme).stream()
-                .map(meme -> Triplet.with(meme, FuzzySearch.tokenSetPartialRatio(meme.fileName(), query), FuzzySearch.tokenSetPartialRatio(meme.description(), query)))
-                .filter(trip -> trip.getValue1() > 85 || trip.getValue2() > 85)
-                .sorted(Comparator.comparing(Triplet::getValue2))
-                .map(Triplet::getValue0)
-                .toList();
+    /**
+     * Executes a fuzzy search in memes by using both filename and description fields.
+     * <p></p>
+     * Notes:
+     * pageSize + 1 elements will be queried. This is used to guess if it has reached the
+     * end of our query. So when calculating the has next property, check if the size of
+     * the returned list is greater than the requested. Also remember to trim the result
+     * in this case.
+     * @param query The search term
+     * @param pageNum Current page to fetch
+     * @param pageSize Maximum number of elements to return + 1. See notes.
+     * @return Memes filtered
+     */
+    public List<Meme> powerSearch(String query, int pageNum, int pageSize) {
+        return jdbcTemplate.query("""
+                SELECT * FROM MEMES
+                WHERE TOKEN_SET_PARTIAL_RATIO(DESCRIPTION, ?) > 85 OR TOKEN_SET_PARTIAL_RATIO(FILENAME, ?) > 85
+                OFFSET ? FETCH FIRST ? ROWS ONLY
+                """,
+                MemeRepository::mapRowToMeme,
+                query,
+                query,
+                (pageNum - 1) * pageSize,
+                pageSize + 1);
     }
 
     /**
