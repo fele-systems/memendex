@@ -1,10 +1,10 @@
 # Memendex
 
-Memendex is a remote file system with the primary purpose of storing memes. It has the ability to add metadata, like tags and description, so you never have to scroll your memes library to find again that meme for that very specific ocasion.
+Memendex is a remote file system with the primary purpose of storing memes. It has the ability to add metadata, like tags and description, so you never have to scroll your memes library to find that meme for that very specific ocasion again.
 
 ## Building
 
-You can build this project using npm commands that will redirect command to the subprojects inside this monorepo.
+You can build this project using npm commands that will redirect commands to the subprojects inside this monorepo.
 
 - `npm run build:front`: Builds the `dist` directory of the Angular app
 - `npm run copy:static`: Copies the `dist` directory to Spring Boot server's resource directory
@@ -33,7 +33,7 @@ You can configure the instance using environment variables:
 ## Roadmap
 
 - [ ] Support for markdown in description field (with markdown preview)
-- [ ] Tags and scoped tags (e.g. #tag, #scoped:tag)
+- [x] Tags and scoped tags (e.g. #tag, #scoped/tag)
 - [ ] Meme templates support
   - [ ] Create new memes on the fly from a template
   - [ ] View memes created from a template
