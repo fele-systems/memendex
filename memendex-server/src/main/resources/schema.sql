@@ -1,18 +1,18 @@
-create table MEMES (
+create table if not exists MEMES (
   ID long not null AUTO_INCREMENT,
   FILENAME varchar(255) not null,
   DESCRIPTION varchar(4096) null,
   PRIMARY KEY ( ID )
 );
 
-create table TAGS (
+create table if not exists TAGS (
   ID long not null AUTO_INCREMENT,
   SCOPE varchar(255) not null,
   "VALUE" varchar(255) null,
   PRIMARY KEY ( ID )
 );
 
-create table TAGS_TO_MEMES (
+create table if not exists TAGS_TO_MEMES (
   ID long not null AUTO_INCREMENT,
   MEME_ID long not null,
   TAG_ID long not null,
@@ -20,4 +20,4 @@ create table TAGS_TO_MEMES (
   FOREIGN KEY (TAG_ID) REFERENCES TAGS(ID)
 );
 
-create alias TOKEN_SET_PARTIAL_RATIO FOR "me.xdrop.fuzzywuzzy.FuzzySearch.tokenSetPartialRatio"
+create alias if not exists TOKEN_SET_PARTIAL_RATIO FOR "me.xdrop.fuzzywuzzy.FuzzySearch.tokenSetPartialRatio"
