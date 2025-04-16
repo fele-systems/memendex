@@ -1,0 +1,13 @@
+{
+  "name": "memendex",
+  "version": "0.0.0",
+  "scripts": {
+    "make:release": "ng build",
+    "build:front": "(cd memendex-front && npm run build)",
+    "build:server": "(cd memendex-server && mvn package)",
+    "copy:static": "cp -rT memendex-front/dist/memendex-front/browser/ memendex-server/src/main/resources/static"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {}
+}
