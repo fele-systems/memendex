@@ -156,4 +156,16 @@ public class MemeRepository {
             throw e;
         }
     }
+
+    /**
+     * Updates the "updated" field to current timestamp
+     * @param id meme id
+     */
+    public void touch(long id) {
+        jdbcTemplate.update("""
+                UPDATE MEMES
+                SET UPDATED = CURRENT_TIMESTAMP(2)
+                WHERE id = ?
+                """, id);
+    }
 }

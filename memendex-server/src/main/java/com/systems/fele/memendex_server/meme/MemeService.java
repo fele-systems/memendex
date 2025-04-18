@@ -227,6 +227,8 @@ public class MemeService {
     public void updateMeme(MemeDetailed meme) {
         if (meme.fileName() != null || meme.description() != null)
             memeRepository.edit(new Meme(meme.id(), meme.fileName(), meme.description()));
+        else
+            memeRepository.touch(meme.id());
 
         if (meme.tags() != null) {
             var currentTagRelation = tagToMemeRepository.getRelationsToMeme(meme.id());
