@@ -16,6 +16,13 @@ h2 {
   overflow-wrap: break-word;
 }
 
+.image-container .fiv-cla {
+  font-size: 120px;
+  margin: 0 auto;
+  width: 100%;
+  height: 200px;
+}
+
 textarea {
   width: 100%;
   border-radius: 5px;

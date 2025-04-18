@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Meme } from "../../../models/Meme";
+import { SUPPORTED_THUMBNAILS } from "../../../logic/MimeTypes";
 
 @Component({
   selector: "app-meme-preview",
@@ -13,5 +14,9 @@ export class MemePreviewComponent {
 
   onSelectMeme(): void {
     if (this.meme) this.select.emit(this.meme);
+  }
+
+  hasThumbnail(): boolean {
+    return SUPPORTED_THUMBNAILS.indexOf(this.meme.extension) >= 0;
   }
 }

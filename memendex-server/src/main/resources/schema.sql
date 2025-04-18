@@ -2,6 +2,7 @@ create table if not exists MEMES (
   ID long not null AUTO_INCREMENT,
   FILENAME varchar(255) not null,
   DESCRIPTION varchar(4096) null,
+  EXTENSION varchar(32) not null,
 
   -- These two should always be the last columns for making the trigger MemeUpdatedTrigger work
   -- even after changes in the table definition

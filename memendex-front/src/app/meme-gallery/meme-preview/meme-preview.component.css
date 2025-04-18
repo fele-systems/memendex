@@ -24,6 +24,11 @@ article .image-container img {
   padding: 0 5px;
 }
 
+article .image-container .fiv-cla {
+  font-size: 120px;
+  margin: 0 auto;
+}
+
 article > p {
   width: 100%;
   text-align: center;

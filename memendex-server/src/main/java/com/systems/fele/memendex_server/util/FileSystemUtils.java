@@ -18,4 +18,10 @@ public class FileSystemUtils {
     public static String sanitizeFileName(String fileName) {
         return new File(fileName).getName();
     }
+
+    public static String getExtension(String fileName) {
+        final var i = fileName.lastIndexOf('.');
+        if (i < 0) return null;
+        else return fileName.substring(i + 1);
+    }
 }

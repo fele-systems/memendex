@@ -1,10 +1,14 @@
 <article (click)="onSelectMeme()">
   <div class="image-container">
-    <img
-      src="/api/memes/{{ meme.id }}/thumbnail"
-      alt="{{ meme.description }}"
-      title="{{ meme.description }}"
-    />
+    @if (hasThumbnail()) {
+      <img
+        src="/api/memes/{{ meme.id }}/thumbnail"
+        alt="{{ meme.description }}"
+        title="{{ meme.description }}"
+      />
+    } @else {
+      <span class="fiv-cla fiv-icon-{{ meme.extension }}"></span>
+    }
   </div>
   <p>{{ meme.fileName }}</p>
 </article>

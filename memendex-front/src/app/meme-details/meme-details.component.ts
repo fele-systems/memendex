@@ -12,6 +12,7 @@ import { DescriptionTextAreaComponent } from "../controls/description-text-area/
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { TagsInputComponent } from "../controls/tags-input/tags-input.component";
+import { SUPPORTED_THUMBNAILS } from "../../logic/MimeTypes";
 
 @Component({
   selector: "app-meme-details",
@@ -46,6 +47,13 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
   compareArrays<T>(a: T[], b: T[]) {
     return (
       a.length === b.length && a.every((element, index) => element === b[index])
+    );
+  }
+
+  hasThumbnail(): boolean {
+    return (
+      this.meme() !== undefined &&
+      SUPPORTED_THUMBNAILS.indexOf(this.meme()!.extension) >= 0
     );
   }
 
