@@ -4,6 +4,8 @@ Memendex is a remote file system with the primary purpose of storing memes. It h
 
 ## Building
 
+This project uses the ASS architecture (Angular + Spring + SQL). The SQL part is implemented with H2 database, so there's no need to setup and external database.
+
 You can build this project using npm commands that will redirect commands to the subprojects inside this monorepo.
 
 - `npm run build:front`: Builds the `dist` directory of the Angular app
