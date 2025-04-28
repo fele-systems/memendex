@@ -6,6 +6,7 @@ import com.systems.fele.memendex_server.model.Meme;
 import com.systems.fele.memendex_server.model.MemeDetailed;
 import com.systems.fele.memendex_server.model.PaginatedResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -82,15 +83,34 @@ public class MemeController {
 
     @GetMapping(value = "/{id}/thumbnail")
     public void thumbnail(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
-        final var mediaType = memeService.getThumbnailTo(id, response.getOutputStream());
+        final var extension = memeService.getMeme(id).orElseThrow(NoSuchMemeError::new).extension();
+        final var mediaType = memeService.getThumbnailTo(id, extension, response.getOutputStream());
         response.setContentType(mediaType.toString());
         response.setStatus(200);
     }
 
-    @GetMapping(value = "/{id}/image")
+    @GetMapping(value = "/{id}/preview")
     public void image(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
-        final var mediaType = memeService.getImageTo(id, response.getOutputStream());
-        response.setContentType(mediaType.toString());
+        final var meme = memeRepository.findById(id).orElseThrow(NoSuchMemeError::new);
+
+        final var mime = MediaType.parseMediaType(MimeTypeService.extensionToMime(meme.extension()).orElseThrow());
+        if (MimeTypeService.isMimeTypeKnown(mime)) {
+            final var mediaType = memeService.getImageTo(meme, response.getOutputStream());
+            response.setContentType(mediaType.toString());
+            response.setStatus(200);
+        } else {
+            response.getWriter().printf("Cannot preview %s files%n", meme.extension());
+            response.setStatus(400);
+        }
+    }
+
+    @GetMapping(value = "/{id}/download")
+    public void download(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
+        final var meme = memeRepository.findById(id).orElseThrow(NoSuchMemeError::new);
+
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.setHeader("Content-Disposition", "attachment; filename=" + meme.fileName());
+        memeService.getImageTo(meme, response.getOutputStream());
         response.setStatus(200);
     }
 

@@ -1,7 +1,14 @@
 @if (meme()) {
   <form (ngSubmit)="submitUpdate()">
     <div class="image-container">
-      <img src="/api/memes/{{ meme()!.id }}/image" />
+      @if (hasThumbnail()) {
+        <img src="/api/memes/{{ meme()!.id }}/preview" />
+      } @else {
+        <a
+          href="/api/memes/{{ meme()!.id }}/download"
+          class="fiv-cla fiv-icon-{{ meme()!.extension }}"
+        ></a>
+      }
     </div>
 
     <h2>{{ meme()!.fileName }}</h2>

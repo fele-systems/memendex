@@ -15,8 +15,6 @@ import java.time.ZonedDateTime;
 public class MemeUpdatedTrigger implements Trigger {
     @Override
     public void fire(Connection connection, Object[] oldRow, Object[] newRow) {
-        System.out.printf("Previous value: %s%n", oldRow[oldRow.length-1]);
-        System.out.printf("New value: %s%n", newRow[newRow.length-1]);
         newRow[newRow.length - 1] = ZonedDateTime.now();
     }
 }

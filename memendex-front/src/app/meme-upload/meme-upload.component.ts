@@ -68,6 +68,16 @@ export class MemeUploadComponent {
     if (event.target) {
       const element = event.target as HTMLInputElement;
       this.file = element.files?.item(0) || undefined;
+      this.autoFillDescription(false);
+    }
+  }
+
+  autoFillDescription(overwrite: boolean) {
+    if (this.file !== undefined) {
+      const description = this.uploadForm.get("description");
+      if (description && (overwrite || description.value === "")) {
+        description.setValue(this.file?.name || "");
+      }
     }
   }
 }
