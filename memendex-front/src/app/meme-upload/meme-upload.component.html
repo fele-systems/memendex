@@ -14,7 +14,12 @@
 
   <div class="form-group">
     <label for="description">Description: </label>
-    <!-- <textarea name="description" formControlName="description"></textarea> -->
+    <input
+      type="button"
+      (click)="autoFillDescription(true)"
+      value="Autofill"
+      title="Autofill description based on file name"
+    />
     <app-description-text-area
       name="description"
       formControlName="description"

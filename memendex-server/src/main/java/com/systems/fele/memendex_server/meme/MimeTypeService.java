@@ -14,7 +14,7 @@ public class MimeTypeService {
             MediaType.IMAGE_GIF
     };
 
-    private record MimeToExtension(String mimeType, String extension) {
+    public record MimeToExtension(String mimeType, String extension) {
         public boolean hasMimeType(String mimeType) {
             return this.mimeType.equals(mimeType);
         }

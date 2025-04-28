@@ -12,10 +12,6 @@ import { PaginatedResponse } from "../../models/PaginatedResponse";
 })
 export class MemeGalleryComponent {
   data = input.required<PaginatedResponse<Meme>>();
-  // memes = input.required<Meme[]>();
-  // totalCount = input.required<number>();
-  // pageSize = input.required<number>();
-  // currentPage = input.required<number>();
 
   get memes() {
     return this.data().data;

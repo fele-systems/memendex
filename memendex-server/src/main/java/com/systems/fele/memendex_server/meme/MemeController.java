@@ -104,6 +104,16 @@ public class MemeController {
         }
     }
 
+    @GetMapping(value = "/{id}/download")
+    public void download(@PathVariable("id") long id, HttpServletResponse response) throws IOException {
+        final var meme = memeRepository.findById(id).orElseThrow(NoSuchMemeError::new);
+
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.setHeader("Content-Disposition", "attachment; filename=" + meme.fileName());
+        memeService.getImageTo(meme, response.getOutputStream());
+        response.setStatus(200);
+    }
+
     @PostMapping(value = "upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public Meme upload(@RequestPart("meme") MultipartFile meme, @RequestPart("description") String description, HttpServletResponse response) throws IOException {
         return memeService.saveMeme(description, meme);

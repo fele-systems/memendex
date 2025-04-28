@@ -70,10 +70,10 @@ public class MemeService {
         final String fileExtension;
         final boolean processThumbnail;
         if (Arrays.stream(MimeTypeService.KNOWN_MIME_TYPES).noneMatch(mimeType::equalsTypeAndSubtype)) {
-            fileExtension = MimeTypeService.mimeToFileExtension(file.getContentType()).get();
+            fileExtension = Optional.ofNullable(FileSystemUtils.getExtension(file.getOriginalFilename())).orElse("dat");
             processThumbnail = false;
         } else {
-            fileExtension = MimeTypeService.mimeToFileExtension(file.getContentType()).orElse("data");
+            fileExtension = MimeTypeService.mimeToFileExtension(file.getContentType()).orElse("dat");
             processThumbnail = true;
         }
 

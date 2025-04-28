@@ -1,10 +1,13 @@
 import {
+  ChangeDetectorRef,
   Component,
+  computed,
   input,
   Input,
   OnChanges,
   OnInit,
   output,
+  signal,
   SimpleChanges,
 } from "@angular/core";
 import { Meme } from "../../models/Meme";
@@ -12,7 +15,7 @@ import { DescriptionTextAreaComponent } from "../controls/description-text-area/
 import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { TagsInputComponent } from "../controls/tags-input/tags-input.component";
-import { SUPPORTED_THUMBNAILS } from "../../logic/MimeTypes";
+import { MemendexBackendService } from "../memendex-backend.service";
 
 @Component({
   selector: "app-meme-details",
@@ -31,10 +34,26 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
   description = new FormControl("");
   tags = new FormControl([] as string[]);
   memeUpdated = output<Meme>();
+  supportedExtensions = signal<string[]>([]);
+  hasThumbnail = computed(() => {
+    const extensions = this.supportedExtensions();
+    const meme = this.meme();
+    return meme !== undefined && extensions.indexOf(meme.extension) >= 0;
+  });
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private memendexBackend: MemendexBackendService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.memendexBackend.observableThumbnailableExtensions.subscribe(
+      (extensions) => {
+        this.supportedExtensions.set(extensions);
+      },
+    );
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes["meme"] && this.meme) {
@@ -47,13 +66,6 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
   compareArrays<T>(a: T[], b: T[]) {
     return (
       a.length === b.length && a.every((element, index) => element === b[index])
-    );
-  }
-
-  hasThumbnail(): boolean {
-    return (
-      this.meme() !== undefined &&
-      SUPPORTED_THUMBNAILS.indexOf(this.meme()!.extension) >= 0
     );
   }
 

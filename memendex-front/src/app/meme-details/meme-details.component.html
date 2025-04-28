@@ -4,7 +4,10 @@
       @if (hasThumbnail()) {
         <img src="/api/memes/{{ meme()!.id }}/preview" />
       } @else {
-        <span class="fiv-cla fiv-icon-{{ meme()!.extension }}"></span>
+        <a
+          href="/api/memes/{{ meme()!.id }}/download"
+          class="fiv-cla fiv-icon-{{ meme()!.extension }}"
+        ></a>
       }
     </div>
 
