@@ -49,6 +49,7 @@ export class DescriptionTextAreaComponent
 
   writeValue(description: string): void {
     this._renderer.setProperty(this.nativeTextArea, "value", description);
+    this.onInput();
   }
 
   registerOnChange(onChange: any): void {
