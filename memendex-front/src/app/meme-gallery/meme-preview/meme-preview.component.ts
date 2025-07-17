@@ -35,7 +35,23 @@ export class MemePreviewComponent implements OnInit {
     );
   }
 
+  memeIconExtension = computed(() => {
+    if (this.meme.type === "link") {
+      return "lnk";
+    } else if (this.meme.type === "note") {
+      return "md";
+    } else {
+      return undefined;
+    }
+  });
+
   supportedExtensions = signal<string[]>([]);
+
+  /**
+   * Tells whether this meme has thumbnails that needs to
+   * be retrieved from the server api. Otherwise a default
+   * icon for a file type will be used.
+   */
   hasThumbnail = computed(() => {
     const extensions = this.supportedExtensions();
     const meme = this.meme;

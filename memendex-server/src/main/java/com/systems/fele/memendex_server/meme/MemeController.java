@@ -116,8 +116,17 @@ public class MemeController {
         final var meme = memeRepository.findById(id).orElseThrow(NoSuchMemeError::new);
 
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.setHeader("Content-Disposition", "attachment; filename=" + meme.fileName());
-        memeService.getImageTo(meme, response.getOutputStream());
+
+        if (meme.type() == MemesType.file) {
+            response.setHeader("Content-Disposition", "attachment; filename=" + meme.fileName());
+            memeService.getImageTo(meme, response.getOutputStream());
+        } else if (meme.type() == MemesType.note) {
+            response.setHeader("Content-Disposition", "attachment; filename=" + meme.fileName() + ".md");
+            response.getWriter().print(meme.description());
+        } else {
+            throw new InvalidMemeException("You can only download memes of type `file` or `note`");
+        }
+
         response.setStatus(200);
     }
 
