@@ -83,21 +83,21 @@ public class TagToMemeRepository {
 
     public List<TagUsage> getTopTags() {
         return jdbcTemplate.query("""
-                        SELECT SCOPE, "VALUE", COUNT(*) AS COUNT
-                        FROM TAGS_TO_MEMES
-                        INNER JOIN TAGS ON TAGS_TO_MEMES.TAG_ID = TAGS.ID
-                        GROUP BY TAG_ID ORDER BY COUNT DESC FETCH FIRST 10 ROWS ONLY""",
+                        SELECT scope, name, COUNT(*) AS COUNT
+                        FROM tags_to_memes
+                        INNER JOIN tags ON tags_to_memes.tag_id = tags.id
+                        GROUP BY tag_id ORDER BY COUNT DESC FETCH FIRST 10 ROWS ONLY""",
                 TagToMemeRepository::tagUsageFromResultSet
         );
     }
 
     public List<TagUsage> getSuggestions(String searchTerm) {
         return jdbcTemplate.query("""
-                        SELECT SCOPE, "VALUE", COUNT(*) AS COUNT
-                        FROM TAGS_TO_MEMES
-                        INNER JOIN TAGS ON TAGS_TO_MEMES.TAG_ID = TAGS.ID
-                        WHERE CONCAT(SCOPE, '/', "VALUE") LIKE CONCAT('%', ?, '%')
-                        GROUP BY TAG_ID
+                        SELECT scope, name, COUNT(*) AS COUNT
+                        FROM tags_to_memes
+                        INNER JOIN TAGS ON tags_to_memes.tag_id = TAGS.ID
+                        WHERE CONCAT(scope, '/', name) LIKE CONCAT('%', ?, '%')
+                        GROUP BY tag_id
                         ORDER BY COUNT DESC
                         FETCH FIRST 10 ROWS ONLY
                         """,
@@ -107,6 +107,6 @@ public class TagToMemeRepository {
     }
 
     private static TagUsage tagUsageFromResultSet(ResultSet resultSet, int i) throws SQLException {
-        return new TagUsage(new Tag(0, resultSet.getString("SCOPE"), resultSet.getString("VALUE")).toString(), resultSet.getInt("COUNT"));
+        return new TagUsage(new Tag(0, resultSet.getString("scope"), resultSet.getString("name")).toString(), resultSet.getInt("count"));
     }
 }

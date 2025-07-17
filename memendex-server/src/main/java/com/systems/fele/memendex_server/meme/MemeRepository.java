@@ -4,6 +4,7 @@ import com.systems.fele.memendex_server.MemendexProperties;
 import com.systems.fele.memendex_server.exception.NoSuchMemeError;
 import com.systems.fele.memendex_server.model.Meme;
 import com.systems.fele.memendex_server.model.MemePayload;
+import com.systems.fele.memendex_server.model.MemesType;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -58,11 +59,12 @@ public class MemeRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         var createdDate = ZonedDateTime.now();
         jdbcTemplate.update(con -> {
-            var stmt = con.prepareStatement("INSERT INTO MEMES (FILENAME, DESCRIPTION, EXTENSION, CREATED) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, memePayload.fileName());
-            stmt.setString(2, memePayload.description());
-            stmt.setString(3, memePayload.extension());
-            stmt.setTimestamp(4, Timestamp.from(Instant.from(createdDate)));
+            var stmt = con.prepareStatement("INSERT INTO memes (type_id, filename, description, extension, created_at) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, memePayload.type().getId());
+            stmt.setString(2, memePayload.fileName());
+            stmt.setString(3, memePayload.description());
+            stmt.setString(4, memePayload.extension());
+            stmt.setTimestamp(5, Timestamp.from(Instant.from(createdDate)));
             return stmt;
         }, keyHolder);
 
@@ -70,6 +72,7 @@ public class MemeRepository {
         if (keys == null) throw new RuntimeException("There was an error retrieving the generated key!");
 
         return new Meme((Long) keys.get("id"),
+                memePayload.type(),
                 memePayload.fileName(),
                 memePayload.description(),
                 memePayload.extension(),
@@ -86,11 +89,12 @@ public class MemeRepository {
     private static Meme mapRowToMeme(ResultSet rs, int rowNum) throws SQLException {
         return new Meme(
                 rs.getLong("id"),
+                MemesType.fromId(rs.getInt("type_id")),
                 rs.getString("filename"),
                 rs.getString("description"),
                 rs.getString("extension"),
-                convertToZonedDateTimeUsingLocalDateTime(rs.getTimestamp("created")),
-                convertToZonedDateTimeUsingLocalDateTime(rs.getTimestamp("updated")));
+                convertToZonedDateTimeUsingLocalDateTime(rs.getTimestamp("created_at")),
+                convertToZonedDateTimeUsingLocalDateTime(rs.getTimestamp("updated_at")));
     }
 
     @Deprecated
@@ -124,8 +128,8 @@ public class MemeRepository {
      */
     public List<Meme> powerSearch(String query, int pageNum, int pageSize) {
         return jdbcTemplate.query("""
-                SELECT * FROM MEMES
-                WHERE TOKEN_SET_PARTIAL_RATIO(DESCRIPTION, ?) > 85 OR TOKEN_SET_PARTIAL_RATIO(FILENAME, ?) > 85
+                SELECT * FROM memes
+                WHERE TOKEN_SET_PARTIAL_RATIO(description, ?) > 85 OR TOKEN_SET_PARTIAL_RATIO(filename, ?) > 85
                 OFFSET ? FETCH FIRST ? ROWS ONLY
                 """, MemeRepository::mapRowToMeme, query, query, (pageNum - 1) * pageSize, pageSize + 1);
     }
@@ -142,7 +146,7 @@ public class MemeRepository {
         }
 
         if (meme.fileName() != null) {
-            params.addValue("fileName", meme.fileName());
+            params.addValue("filename", meme.fileName());
         }
 
         if (meme.extension() != null) {
@@ -157,7 +161,7 @@ public class MemeRepository {
         params.addValue("id", id);
 
         // Build the SET expression based on which fields where present
-        final var sql = "UPDATE MEMES SET " + Arrays.stream(params.getParameterNames())
+        final var sql = "UPDATE memes SET " + Arrays.stream(params.getParameterNames())
                 .map(n -> String.format("%s = :%s", n, n))
                 .collect(Collectors.joining(", ")) +
                 " WHERE id = :id";
@@ -192,11 +196,11 @@ public class MemeRepository {
                 throw new RuntimeException("Something went wrong while renaming the file");
             }
 
-            params.addValue("fileName", meme.fileName());
+            params.addValue("filename", meme.fileName());
         }
 
         // Build the SET expression based on which fields where present
-        final var sql = "UPDATE MEMES SET " + Arrays.stream(params.getParameterNames()).map(n -> String.format("%s = :%s", n, n)).collect(Collectors.joining(", ")) + " WHERE id = :id";
+        final var sql = "UPDATE memes SET " + Arrays.stream(params.getParameterNames()).map(n -> String.format("%s = :%s", n, n)).collect(Collectors.joining(", ")) + " WHERE id = :id";
 
         params.addValue("id", meme.id());
 
@@ -216,7 +220,7 @@ public class MemeRepository {
      */
     public void touch(long id) {
         jdbcTemplate.update("""
-                UPDATE MEMES
+                UPDATE memes
                 SET UPDATED = CURRENT_TIMESTAMP(2)
                 WHERE id = ?
                 """, id);

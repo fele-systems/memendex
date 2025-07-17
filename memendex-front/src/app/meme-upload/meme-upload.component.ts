@@ -16,6 +16,10 @@ import { BrowserModule } from "@angular/platform-browser";
 import { DescriptionTextAreaComponent } from "../controls/description-text-area/description-text-area.component";
 import { Meme } from "../../models/Meme";
 
+/**
+ * This component handles the variations in fields
+ * for each different meme type.
+ */
 @Component({
   selector: "app-meme-upload",
   imports: [FormsModule, ReactiveFormsModule, DescriptionTextAreaComponent],
@@ -23,26 +27,79 @@ import { Meme } from "../../models/Meme";
   styleUrl: "./meme-upload.component.css",
 })
 export class MemeUploadComponent {
-  uploadForm = new FormGroup({
-    meme: new FormControl(""),
-    description: new FormControl<string>(""),
-  });
+  /** Field exclusive for Bookmark Memes */
+  link = new FormControl<string>("");
+  /** Field exclusive for Note Memes */
+  title = new FormControl<string>("");
+  /** Fields exclusive for Image or File Memes */
   file: File | undefined;
+  fileFormControl = new FormControl();
+  /** Field commom for all types of Memes */
+  description = new FormControl<string>("");
+  /** Error reporter variable */
+  error?: string;
+
+  /** Signal for when a Meme submit is completed sucessfuly */
   @Output() memeUploaded = new EventEmitter<Meme>();
 
   constructor(private http: HttpClient) {}
 
-  submit() {
+  /**
+   * Constructs a FormData containing the following data depending on meme file:
+   * - when file: file, description, type
+   * - when note: title, description, type
+   * - when link: link, description, type
+   * and submits it to `/api/memes/upload`.
+   * The meme type is guesses based on which fields are filled (title, link, file).
+   */
+  submit(): void {
     const formData = new FormData();
-    const { description } = this.uploadForm.value;
 
-    if (!this.file || !description) {
-      alert("Please fill both the meme file and a description to upload");
-      return;
+    const hasLink = Boolean(this.link.value);
+    const hasTitle = Boolean(this.title.value);
+    const hasFile = Boolean(this.file);
+
+    // Guess memeType based on which field is filled
+    const memeType =
+      hasLink && !hasTitle && !hasFile
+        ? "link"
+        : hasTitle && !hasLink && !hasFile
+          ? "note"
+          : hasFile && !hasTitle && !hasLink
+            ? "file"
+            : undefined;
+
+    if (memeType === undefined) {
+      throw Error(
+        "Invalid meme type: could not guess meme type based on which inputs where filled",
+      );
     }
 
-    formData.append("description", description || "");
-    formData.append("meme", this.file);
+    // Common data for all types
+    if (this.description.value)
+      formData.append("description", this.description.value);
+    formData.append("type", memeType);
+
+    // Validade the fields exclusive for each meme and fill FormData
+    if (memeType === "file") {
+      if (!this.file) {
+        this.error = "Please fill the file input";
+        return;
+      }
+      formData.append("file", this.file);
+    } else if (memeType === "note") {
+      if (!this.title.value) {
+        this.error = "Please fill title input";
+        return;
+      }
+      formData.append("title", this.title.value);
+    } else if (memeType === "link") {
+      if (!this.link.value) {
+        this.error = "Please fill the link input";
+        return;
+      }
+      formData.append("link", this.link.value);
+    }
 
     const response = this.http.post("/api/memes/upload", formData, {
       observe: "events",
@@ -59,7 +116,14 @@ export class MemeUploadComponent {
           this.memeUploaded.emit(event.body as Meme);
         }
 
-        this.uploadForm.reset();
+        this.file = undefined;
+        this.link.reset();
+        this.title.reset();
+        this.description.reset();
+        this.fileFormControl.reset();
+        this.link.enable();
+        this.title.enable();
+        this.fileFormControl.enable();
       }
     });
   }
@@ -69,14 +133,36 @@ export class MemeUploadComponent {
       const element = event.target as HTMLInputElement;
       this.file = element.files?.item(0) || undefined;
       this.autoFillDescription(false);
+
+      this.link.disable();
+      this.title.disable();
+    }
+  }
+
+  onLinkChanged(event: Event) {
+    if (this.link.value) {
+      this.title.disable();
+      this.fileFormControl.disable();
+    } else {
+      this.title.enable();
+      this.fileFormControl.enable();
+    }
+  }
+
+  onTitleChanged(event: Event) {
+    if (this.title.value) {
+      this.fileFormControl.disable();
+      this.link.disable();
+    } else {
+      this.fileFormControl.enable();
+      this.link.enable();
     }
   }
 
   autoFillDescription(overwrite: boolean) {
     if (this.file !== undefined) {
-      const description = this.uploadForm.get("description");
-      if (description && (overwrite || description.value === "")) {
-        description.setValue(this.file?.name || "");
+      if (overwrite || !this.description.value) {
+        this.description.setValue(this.file?.name || "");
       }
     }
   }

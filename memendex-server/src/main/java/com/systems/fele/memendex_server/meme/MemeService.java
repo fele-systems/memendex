@@ -2,10 +2,7 @@ package com.systems.fele.memendex_server.meme;
 
 import com.systems.fele.memendex_server.MemendexProperties;
 import com.systems.fele.memendex_server.exception.NoSuchMemeError;
-import com.systems.fele.memendex_server.model.Meme;
-import com.systems.fele.memendex_server.model.MemeDetailed;
-import com.systems.fele.memendex_server.model.MemePayload;
-import com.systems.fele.memendex_server.model.Tag;
+import com.systems.fele.memendex_server.model.*;
 import com.systems.fele.memendex_server.tag.TagRepository;
 import com.systems.fele.memendex_server.util.FileSystemUtils;
 import jakarta.servlet.ServletOutputStream;
@@ -51,13 +48,13 @@ public class MemeService {
                 .map(Optional::get)
                 .map(Tag::toString)
                 .toList();
-        return new MemeDetailed(meme.id(), meme.fileName(), meme.description(), meme.extension(), tags);
+        return new MemeDetailed(meme.id(), meme.type(), meme.fileName(), meme.description(), meme.extension(), tags);
     }
 
     /**
-     * Saves a new meme in the repository. This function handles the file inside
+     * Saves a new meme (type image) in the repository. This function handles the file inside
      * upload location.
-     * @param description The description of the meme to create
+     * @param description \The description of the meme to create
      * @param file The @{@link MultipartFile} with the file contents
      * @return The newly created meme
      * @throws IOException If there`s any IO errors
@@ -77,7 +74,7 @@ public class MemeService {
             processThumbnail = true;
         }
 
-        var meme = memeRepository.insert(new MemePayload(file.getOriginalFilename(), description, fileExtension));
+        var meme = memeRepository.insert(new MemePayload(MemesType.file, file.getOriginalFilename(), description, fileExtension));
 
         final var fileName = meme.getPhysicalFileName();
         final var targetFile = new File(memendexProperties.uploadLocation(), fileName);
@@ -90,6 +87,28 @@ public class MemeService {
             generateAndSaveThumbnail(meme.id(), fileExtension);
 
         return meme;
+    }
+
+    /**
+     * Saves a new meme (type link) in the repository.
+     * @param description The description of the meme to create
+     * @param link The URL this link will bookmark
+     * @return The newly created meme
+     */
+    public Meme saveBookmark(String description, String link) {
+        assert (description != null && link != null);
+        return memeRepository.insert(new MemePayload(MemesType.link, link, description, null));
+    }
+
+    /**
+     * Saves a new meme (type note) in the repository.
+     * @param description The description of the meme to create
+     * @param title Title for the note
+     * @return The newly created meme
+     */
+    public Meme saveNote(String description, String title) {
+        assert (description != null && title != null);
+        return memeRepository.insert(new MemePayload(MemesType.note, title, description, null));
     }
 
     /**
@@ -169,7 +188,7 @@ public class MemeService {
 
     public void updateMeme(MemeDetailed meme) {
         if (meme.fileName() != null || meme.description() != null)
-            memeRepository.update(meme.id(), new MemePayload(meme.fileName(), meme.description(), null));
+            memeRepository.update(meme.id(), new MemePayload(meme.type(), meme.fileName(), meme.description(), null));
         else
             memeRepository.touch(meme.id());
 
@@ -205,4 +224,7 @@ public class MemeService {
     public Optional<Meme> getMeme(long id) {
         return memeRepository.findById(id);
     }
+
+
+
 }

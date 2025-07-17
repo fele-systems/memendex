@@ -1,16 +1,37 @@
-<form [formGroup]="uploadForm" (ngSubmit)="submit()">
+<form (ngSubmit)="submit()">
   <div class="form-group">
-    <label for="meme">Meme: </label>
+    <label for="file">File: </label>
     <input
       (change)="onFileSelected($event)"
       class="file-input"
       type="file"
-      name="meme"
-      formControlName="meme"
+      [formControl]="fileFormControl"
     />
-
-    <p class="error">Please fill this field</p>
   </div>
+
+  <div class="form-group">
+    <label for="link">Bookmark: </label>
+    <input
+      (change)="onLinkChanged($event)"
+      type="url"
+      [formControl]="link"
+      name="link"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="title">Title (for note): </label>
+    <input
+      (change)="onTitleChanged($event)"
+      type="text"
+      [formControl]="title"
+      name="title"
+    />
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
 
   <div class="form-group">
     <label for="description">Description: </label>
@@ -21,8 +42,8 @@
       title="Autofill description based on file name"
     />
     <app-description-text-area
+      [formControl]="description"
       name="description"
-      formControlName="description"
     ></app-description-text-area>
     <p class="error">Please fill this field</p>
   </div>

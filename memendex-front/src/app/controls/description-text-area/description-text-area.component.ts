@@ -31,7 +31,7 @@ export class DescriptionTextAreaComponent
   minLines = input(3);
   readOnly = input(false);
   numberOfLines = signal(0);
-  initialValue = input<string | undefined>(undefined);
+  initialValue = input<string | null>(null);
 
   // ControlValueAcessor callbacks
   onChange = (description: string) => {};
@@ -47,8 +47,9 @@ export class DescriptionTextAreaComponent
     }
   }
 
-  writeValue(description: string): void {
-    this._renderer.setProperty(this.nativeTextArea, "value", description);
+  writeValue(value: any): void {
+    console.log("writeValue(" + value + ")");
+    this._renderer.setProperty(this.nativeTextArea, "value", value);
     this.onInput();
   }
 

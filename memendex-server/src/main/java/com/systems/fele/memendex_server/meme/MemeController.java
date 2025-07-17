@@ -1,9 +1,11 @@
 package com.systems.fele.memendex_server.meme;
 
 import com.systems.fele.memendex_server.MemendexProperties;
+import com.systems.fele.memendex_server.exception.InvalidMemeException;
 import com.systems.fele.memendex_server.exception.NoSuchMemeError;
 import com.systems.fele.memendex_server.model.Meme;
 import com.systems.fele.memendex_server.model.MemeDetailed;
+import com.systems.fele.memendex_server.model.MemesType;
 import com.systems.fele.memendex_server.model.PaginatedResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -11,9 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.*;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/memes")
@@ -115,8 +122,31 @@ public class MemeController {
     }
 
     @PostMapping(value = "upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public Meme upload(@RequestPart("meme") MultipartFile meme, @RequestPart("description") String description, HttpServletResponse response) throws IOException {
-        return memeService.saveMeme(description, meme);
+    public Meme upload(MultipartHttpServletRequest request, HttpServletResponse response) throws IOException {
+        // @RequestPart("meme") MultipartFile meme, @RequestPart("description") String description
+        var type = MemesType.valueOf(Objects.requireNonNull(request.getParameter("type"), "The type parameter is missing and it's required"));
+        var description = Objects.requireNonNullElse(request.getParameter("description"), "");
+
+        if (type == MemesType.file) {
+            var file = request.getFile("file");
+            if (file == null) throw new InvalidMemeException("For type `file`, the `file` form-part is required");
+            return memeService.saveMeme(description, file);
+        } else if (type == MemesType.link) {
+            var link = request.getParameter("link");
+            if (link == null) throw new InvalidMemeException("For type `link`, the `link` form-part is required");
+            return memeService.saveBookmark(description, link);
+        } else if (type == MemesType.note) {
+            var title = request.getParameter("title");
+            if (title == null) throw new InvalidMemeException("For type `note`, the `title` form-part is required");
+            return memeService.saveNote(description, title);
+        }
+
+        System.out.println(request.getParameter("description"));
+        System.out.println(request.getParameter("link"));
+        System.out.println(request.getParameter("title"));
+        System.out.println(request.getFile("meme"));
+        // return memeService.saveMeme(description, meme);
+        return null;
     }
 
     @PatchMapping(value = "edit", consumes = { MediaType.APPLICATION_JSON_VALUE })

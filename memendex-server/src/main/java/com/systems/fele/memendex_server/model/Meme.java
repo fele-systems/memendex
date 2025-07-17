@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
  */
 public record Meme(
         long id,
+        MemesType type,
         String fileName,
         String description,
         String extension,
