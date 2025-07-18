@@ -10,7 +10,8 @@ public class MemendexServerApplication {
 
 
     public static void main(String[] args) {
-		System.setProperty("java.awt.headless", "false");
+		if (!System.getenv().getOrDefault("MEMENDEX_HEADLESS", "").isEmpty())
+			System.setProperty("java.awt.headless", "false");
 		SpringApplication.run(MemendexServerApplication.class, args);
 	}
 

@@ -22,11 +22,15 @@ java -jar memendex-server/target/memendex-server-*.jar
 
 You can configure the instance using environment variables:
 
-| Variable                   | Description                                           | Default     |
-| ---                        | ---                                                   | ---         |
-| `MEMENDEX_PORT`            | The application http port                             | `8080`      |
-| `MEMENDEX_UPLOAD_LOCATION` | Directory which memendex will store the images        | `./uploads` |
-| `MEMENDEX_CACHE`           | Cache directory. This directory may be safely deleted | `.cache`    |
+| Variable                   | Description                                           | Default      |
+| ---                        | ---                                                   | ---          |
+| `MEMENDEX_PORT`            | The application http port                             | `8080`       |
+| `MEMENDEX_UPLOAD_LOCATION` | Directory which memendex will store the images        | `./uploads`  |
+| `MEMENDEX_CACHE`           | Cache directory. This directory may be safely deleted | `.cache`     |
+| `MEMENDEX_DATABASE`        | Path for the database file.                           | `./memendex` |
+| `MEMENDEX_HEADLESS`        | If non-empty, run in headless mode.                   | none         |
+
+Note that the file name will be whatever is defined by `MEMENDEX_DATABASE` plus a `mv.db` suffix.
 
 ## Screenshots
 

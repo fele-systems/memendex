@@ -158,9 +158,13 @@ public class MemeService {
 
     private BufferedImage getCompatibleImage(int w, int h) {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
-        GraphicsConfiguration gc = gd.getDefaultConfiguration();
-        return gc.createCompatibleImage(w, h);
+        if (ge.isHeadlessInstance()) {
+            return new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        } else {
+            GraphicsDevice gd = ge.getDefaultScreenDevice();
+            GraphicsConfiguration gc = gd.getDefaultConfiguration();
+            return gc.createCompatibleImage(w, h);
+        }
     }
 
     public MediaType getThumbnailTo(long id, String extension, OutputStream outputStream) throws IOException {
