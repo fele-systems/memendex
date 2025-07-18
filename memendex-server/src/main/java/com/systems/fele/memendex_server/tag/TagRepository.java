@@ -40,7 +40,7 @@ public class TagRepository {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
-            var stmt = con.prepareStatement("INSERT INTO TAGS (SCOPE, \"VALUE\") VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+            var stmt = con.prepareStatement("INSERT INTO TAGS (scope, name) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, myScope);
             stmt.setString(2, myValue);
             return stmt;
@@ -61,21 +61,21 @@ public class TagRepository {
 
     public Optional<Tag> getTag(String scope, String value) {
         return value == null ?
-                jdbcTemplate.query("SELECT * FROM TAGS WHERE SCOPE = ? AND \"VALUE\" IS NULL LIMIT 1", TagRepository::mapRowToTag,
+                jdbcTemplate.query("SELECT * FROM TAGS WHERE scope = ? AND name IS NULL LIMIT 1", TagRepository::mapRowToTag,
                         scope).stream().findFirst()
                 :
-                jdbcTemplate.query("SELECT * FROM TAGS WHERE SCOPE = ? AND \"VALUE\" = ? LIMIT 1", TagRepository::mapRowToTag,
+                jdbcTemplate.query("SELECT * FROM TAGS WHERE scope = ? AND name = ? LIMIT 1", TagRepository::mapRowToTag,
                         scope, value).stream().findFirst();
     }
 
     public List<Tag> search(String searchTerm) {
-        return jdbcTemplate.query("SELECT * FROM TAGS WHERE CONCAT(SCOPE, '/', \"VALUE\") LIKE CONCAT('%', ?, '%')",
+        return jdbcTemplate.query("SELECT * FROM TAGS WHERE CONCAT(scope, '/', name) LIKE CONCAT('%', ?, '%')",
                 TagRepository::mapRowToTag,
                 searchTerm);
     }
 
     private static Tag mapRowToTag(ResultSet rs, int rowNum) throws SQLException {
-        return new Tag(rs.getLong("id"), rs.getString("SCOPE"), rs.getString("VALUE"));
+        return new Tag(rs.getLong("id"), rs.getString("scope"), rs.getString("name"));
     }
 
     public void deleteTag(long tagId) {

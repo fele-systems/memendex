@@ -221,7 +221,7 @@ public class MemeRepository {
     public void touch(long id) {
         jdbcTemplate.update("""
                 UPDATE memes
-                SET UPDATED = CURRENT_TIMESTAMP(2)
+                SET updated_at = CURRENT_TIMESTAMP(2)
                 WHERE id = ?
                 """, id);
     }
