@@ -10,8 +10,14 @@ public class MemendexServerApplication {
 
 
     public static void main(String[] args) {
-		if (!System.getenv().getOrDefault("MEMENDEX_HEADLESS", "").isEmpty())
+		var headless = System.getenv().getOrDefault("MEMENDEX_HEADLESS", "");
+
+		if (headless.isEmpty()) {
 			System.setProperty("java.awt.headless", "false");
+		} else {
+			System.out.println("Picked up environment variable MEMENDEX_HEADLESS with value " + headless + ". Running in headless mode");
+		}
+
 		SpringApplication.run(MemendexServerApplication.class, args);
 	}
 
