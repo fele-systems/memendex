@@ -7,6 +7,8 @@ import com.systems.fele.memendex_server.tag.TagRepository;
 import com.systems.fele.memendex_server.util.FileSystemUtils;
 import jakarta.servlet.ServletOutputStream;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,8 @@ public class MemeService {
     private final File cacheDir;
     private final TagRepository tagRepository;
     private final TagToMemeRepository tagToMemeRepository;
+
+    private final Logger logger = LoggerFactory.getLogger(MemeService.class);
 
     public MemeService(MemendexProperties memendexProperties, MemeRepository memeRepository, TagRepository tagRepository, TagToMemeRepository tagToMemeRepository) {
         this.memendexProperties = memendexProperties;
@@ -76,8 +80,7 @@ public class MemeService {
 
         var meme = memeRepository.insert(new MemePayload(MemesType.file, file.getOriginalFilename(), description, fileExtension));
 
-        final var fileName = meme.getPhysicalFileName();
-        final var targetFile = new File(memendexProperties.uploadLocation(), fileName);
+        final var targetFile = getInDiskFileName(meme);
 
         try (FileOutputStream fos = new FileOutputStream(targetFile)) {
             IOUtils.copy(file.getInputStream(), fos);
@@ -118,6 +121,16 @@ public class MemeService {
      */
     public File getThumbnailFileName(long id) {
         return new File(cacheDir, id +  ".jpeg");
+    }
+
+    /**
+     * Returns the file in disk.
+     * @param meme The meme
+     * @return File pointing to the actual file name
+     */
+    public File getInDiskFileName(Meme meme) {
+        final var fileName = meme.getPhysicalFileName();
+        return new File(memendexProperties.uploadLocation(), fileName);
     }
 
     /**
@@ -183,7 +196,8 @@ public class MemeService {
     }
 
     public MediaType getImageTo(Meme meme, ServletOutputStream outputStream) throws IOException {
-        try(FileInputStream input = new FileInputStream(new File(memendexProperties.uploadLocation(), meme.getPhysicalFileName()))) {
+
+        try(FileInputStream input = new FileInputStream(getInDiskFileName(meme))) {
             IOUtils.copy(input, outputStream);
         }
 
@@ -231,6 +245,17 @@ public class MemeService {
 
 
     public void deleteMeme(long id) {
+        var meme = memeRepository.findById(id).orElseThrow(NoSuchMemeError::new);
+        if (meme.type() == MemesType.file) {
+            var thumbnailFile = getThumbnailFileName(id);
+            var inDiskFile = getInDiskFileName(meme);
+            if (!inDiskFile.delete()) {
+                logger.warn("Could not delete file '{}' for meme. Meme: {}", inDiskFile, id);
+            }
+            if (!thumbnailFile.delete()) {
+                logger.warn("Could not delete thumbnail for meme {}", id);
+            }
+        }
         memeRepository.deleteById(id);
     }
 }
