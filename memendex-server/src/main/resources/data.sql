@@ -11,3 +11,14 @@ INSERT INTO memes (type_id, filename, description, extension) VALUES (1, 'RDT_20
 INSERT INTO memes (type_id, filename, description, extension) VALUES (1, 'RDT_20240701_0913308023764637066291217.jpg', 'E possivel morar no Brasil sem querer se matar?', 'jpeg');
 INSERT INTO memes (type_id, filename, description, extension) VALUES (1, 'RDT_20240729_2213551813795999600336891.jpg', U&'Introvertidos quando o troco vem faltando R$ 100,00\000ATa joia', 'jpeg');
 INSERT INTO memes (type_id, filename, description, extension) VALUES (1, 'RDT_20240912_1031158331668895013402675.jpg', U&'Babe, just tell me what''s wrong?\000AFiretrucks are actually watertrucks', 'jpeg');
+
+INSERT INTO tags (scope, name) VALUES ('r', 'technicallythetruth');
+INSERT INTO tags (scope, name) VALUES ('r', 'eu_nvr');
+INSERT INTO tags (scope, name) VALUES ('r', 'okbr');
+INSERT INTO tags (scope, name) VALUES ('r', 'antimeme');
+INSERT INTO tags (scope, name) VALUES ('type', 'reaction');
+
+INSERT INTO tags_to_memes (meme_id, tag_id) VALUES (1, 3);
+INSERT INTO tags_to_memes (meme_id, tag_id) VALUES (2, 4);
+INSERT INTO tags_to_memes (meme_id, tag_id) VALUES (3, 2);
+INSERT INTO tags_to_memes (meme_id, tag_id) VALUES (4, 5);
