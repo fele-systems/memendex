@@ -102,19 +102,21 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
   submitDelete() {
     const meme = this.meme();
     if (meme) {
-      this.http
-        .delete(`/api/memes/${meme.id}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          observe: "response",
-        })
-        .subscribe((response) => {
-          if (!response.ok) {
-            alert(JSON.stringify(response.body));
-          }
-          this.memeDeleted.emit(meme.id);
-        });
+      if (confirm(`Are you sure to delete ${meme.fileName}?`)) {
+        this.http
+          .delete(`/api/memes/${meme.id}`, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            observe: "response",
+          })
+          .subscribe((response) => {
+            if (!response.ok) {
+              alert(JSON.stringify(response.body));
+            }
+            this.memeDeleted.emit(meme.id);
+          });
+      }
     }
   }
 }
