@@ -225,4 +225,9 @@ public class MemeRepository {
                 WHERE id = ?
                 """, id);
     }
+
+    public void deleteById(long id) {
+        jdbcTemplate.update("""
+                DELETE FROM memes WHERE id = ?""", id);
+    }
 }

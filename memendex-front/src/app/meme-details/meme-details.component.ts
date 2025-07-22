@@ -34,6 +34,7 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
   description = new FormControl("");
   tags = new FormControl([] as string[]);
   memeUpdated = output<Meme>();
+  memeDeleted = output<number>();
   supportedExtensions = signal<string[]>([]);
   hasThumbnail = computed(() => {
     const extensions = this.supportedExtensions();
@@ -69,6 +70,14 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
     );
   }
 
+  submitForm(id: string) {
+    if (id === "edit") {
+      this.submitUpdate();
+    } else if (id === "delete") {
+      this.submitDelete();
+    }
+  }
+
   submitUpdate() {
     var payload = new Map<string, unknown>();
     payload.set("id", this.meme()?.id as number);
@@ -88,5 +97,24 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
         }
         this.memeUpdated.emit(response.body as Meme);
       });
+  }
+
+  submitDelete() {
+    const meme = this.meme();
+    if (meme) {
+      this.http
+        .delete(`/api/memes/${meme.id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          observe: "response",
+        })
+        .subscribe((response) => {
+          if (!response.ok) {
+            alert(JSON.stringify(response.body));
+          }
+          this.memeDeleted.emit(meme.id);
+        });
+    }
   }
 }

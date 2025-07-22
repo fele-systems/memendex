@@ -1,5 +1,5 @@
 @if (meme()) {
-  <form (ngSubmit)="submitUpdate()">
+  <form (ngSubmit)="submitForm($event.submitter.id)">
     <div class="image-container">
       @if (meme()!.type === "file") {
         @if (hasThumbnail()) {
@@ -31,7 +31,10 @@
 
     <br />
 
-    <input type="submit" value="Edit" />
+    <div class="actions-container">
+      <input type="submit" id="edit" value="Edit" />
+      <input type="submit" id="delete" value="Delete" />
+    </div>
   </form>
 } @else {
   <div class="image-container">

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartRequest;
 import java.io.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -162,6 +163,12 @@ public class MemeController {
     public MemeDetailed edit(@RequestBody MemeDetailed meme){
         memeService.updateMeme(meme);
         return memeService.enrich(memeService.getMeme(meme.id()).orElseThrow(NoSuchMemeError::new));
+    }
+
+    @DeleteMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public Object delete(@PathVariable("id") long id) {
+        memeService.deleteMeme(id);
+        return Map.of("id", id);
     }
 
 }

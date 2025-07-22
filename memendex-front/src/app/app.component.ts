@@ -61,6 +61,15 @@ export class AppComponent {
     }
   }
 
+  memeDeleted(id: number) {
+    console.log(`Delete ${id}`);
+    const i = this.memes().data.findIndex((m) => m.id === id);
+    if (i >= 0) {
+      this.memes().data.splice(i, 1);
+      this.memes.set(this.memes());
+    }
+  }
+
   onSelectMeme(meme: Meme) {
     this.selectedMeme = meme;
   }

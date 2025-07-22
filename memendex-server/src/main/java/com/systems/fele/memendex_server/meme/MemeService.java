@@ -230,5 +230,7 @@ public class MemeService {
     }
 
 
-
+    public void deleteMeme(long id) {
+        memeRepository.deleteById(id);
+    }
 }
