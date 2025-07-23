@@ -137,25 +137,22 @@ public class MemeController {
         var type = MemesType.valueOf(Objects.requireNonNull(request.getParameter("type"), "The type parameter is missing and it's required"));
         var description = Objects.requireNonNullElse(request.getParameter("description"), "");
 
+        var tags = request.getParameterValues("tag");
+
         if (type == MemesType.file) {
             var file = request.getFile("file");
             if (file == null) throw new InvalidMemeException("For type `file`, the `file` form-part is required");
-            return memeService.saveMeme(description, file);
+            return memeService.saveMeme(description, file, tags);
         } else if (type == MemesType.link) {
             var link = request.getParameter("link");
             if (link == null) throw new InvalidMemeException("For type `link`, the `link` form-part is required");
-            return memeService.saveBookmark(description, link);
+            return memeService.saveBookmark(description, link, tags);
         } else if (type == MemesType.note) {
             var title = request.getParameter("title");
             if (title == null) throw new InvalidMemeException("For type `note`, the `title` form-part is required");
-            return memeService.saveNote(description, title);
+            return memeService.saveNote(description, title, tags);
         }
 
-        System.out.println(request.getParameter("description"));
-        System.out.println(request.getParameter("link"));
-        System.out.println(request.getParameter("title"));
-        System.out.println(request.getFile("meme"));
-        // return memeService.saveMeme(description, meme);
         return null;
     }
 

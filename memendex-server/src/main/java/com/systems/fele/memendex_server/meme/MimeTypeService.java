@@ -3,6 +3,7 @@ package com.systems.fele.memendex_server.meme;
 import org.javatuples.Pair;
 import org.springframework.http.MediaType;
 
+import javax.print.attribute.standard.Media;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -11,7 +12,8 @@ public class MimeTypeService {
     static final MediaType[] KNOWN_MIME_TYPES = new MediaType[] {
             MediaType.IMAGE_PNG,
             MediaType.IMAGE_JPEG,
-            MediaType.IMAGE_GIF
+            MediaType.IMAGE_GIF,
+            new MediaType("image", "heif")
     };
 
     public record MimeToExtension(String mimeType, String extension) {
@@ -27,7 +29,8 @@ public class MimeTypeService {
     private static final MimeToExtension[] MIME_TO_EXTENSION_TABLE = new MimeToExtension[]{
             new MimeToExtension(MediaType.IMAGE_PNG_VALUE, "png"),
             new MimeToExtension(MediaType.IMAGE_JPEG_VALUE, "jpeg"),
-            new MimeToExtension(MediaType.IMAGE_GIF_VALUE, "gif")
+            new MimeToExtension(MediaType.IMAGE_GIF_VALUE, "gif"),
+            new MimeToExtension("image/heif", "heic")
     };
 
     /**
