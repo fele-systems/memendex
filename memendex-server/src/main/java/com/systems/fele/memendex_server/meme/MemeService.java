@@ -4,6 +4,8 @@ import com.systems.fele.memendex_server.MemendexProperties;
 import com.systems.fele.memendex_server.exception.InvalidMemeException;
 import com.systems.fele.memendex_server.exception.NoSuchMemeError;
 import com.systems.fele.memendex_server.model.*;
+import com.systems.fele.memendex_server.multimedia.MimeTypeService;
+import com.systems.fele.memendex_server.multimedia.MultimediaService;
 import com.systems.fele.memendex_server.tag.TagRepository;
 import com.systems.fele.memendex_server.tag.TagService;
 import com.systems.fele.memendex_server.util.FileSystemUtils;
@@ -172,9 +174,12 @@ public class MemeService {
      * @throws IOException If any error
      */
     private File generateAndSaveThumbnail(long id, String extension) throws IOException {
+        final var meme = memeRepository.findById(id).orElseThrow(NoSuchMemeError::new);
+        final var inputFile = getInDiskFileName(meme);
         final var thumbnailFile = getThumbnailFileName(id);
-        var thumbImg = generateThumbnail(id + "." + extension);
-        ImageIO.write(thumbImg, "jpeg", thumbnailFile);
+
+        MultimediaService.generateThumbnail(inputFile, thumbnailFile, false);
+
         return thumbnailFile;
     }
 
