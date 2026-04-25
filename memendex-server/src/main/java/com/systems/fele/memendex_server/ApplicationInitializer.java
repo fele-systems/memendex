@@ -69,7 +69,7 @@ public class ApplicationInitializer implements ApplicationListener<ApplicationRe
         var pathFile = new File(path);
         if (pathFile.exists() && !pathFile.isDirectory())
             throw new RuntimeException("The path %s already exists and it's not a directory".formatted(path));
-        else if (!pathFile.exists() && pathFile.mkdirs())
+        else if (!pathFile.exists() && !pathFile.mkdirs())
             throw new RuntimeException("Could not create upload directory: %s".formatted(path));
     }
 }
