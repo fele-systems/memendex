@@ -16,7 +16,7 @@
       <a href="/api/memes/{{ meme()!.id }}/download">Download file</a>
     }
 
-    <h2>{{ meme()!.fileName }}</h2>
+    <h2 (click)="enableFileNameEdit($event)">{{ meme()!.fileName }}</h2>
 
     <label for="description">Description:</label>
     <app-description-text-area

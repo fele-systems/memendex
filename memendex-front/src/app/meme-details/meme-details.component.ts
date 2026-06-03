@@ -31,11 +31,13 @@ import { MemendexBackendService } from "../memendex-backend.service";
 export class MemeDetailsComponent implements OnChanges, OnInit {
   // @Input({ required: false }) meme: Meme | undefined;
   meme = input<Meme>();
+  fileName = new FormControl('');
   description = new FormControl("");
   tags = new FormControl([] as string[]);
   memeUpdated = output<Meme>();
   memeDeleted = output<number>();
   supportedExtensions = signal<string[]>([]);
+  fileNameReadOnly = signal<boolean>(true);
   hasThumbnail = computed(() => {
     const extensions = this.supportedExtensions();
     const meme = this.meme();
@@ -61,6 +63,7 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
       // Update the FormControl value when `object` changes
       this.description.setValue(this.meme()?.description || "");
       this.tags.setValue(this.meme()?.tags || []);
+      this.fileName.setValue(this.meme()?.fileName || '');
     }
   }
 
@@ -118,5 +121,10 @@ export class MemeDetailsComponent implements OnChanges, OnInit {
           });
       }
     }
+  }
+
+  enableFileNameEdit(event: Event) {
+    console.log('Set readonly');
+    this.fileNameReadOnly.set(false);
   }
 }

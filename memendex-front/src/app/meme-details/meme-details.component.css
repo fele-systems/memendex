@@ -11,10 +11,7 @@ img {
   width: 100%;
 }
 
-h2 {
-  text-wrap: balance;
-  overflow-wrap: break-word;
-}
+
 
 .image-container .fiv-cla {
   font-size: 120px;
@@ -60,4 +57,24 @@ input[type="submit"]:first-child {
 input[type="submit"]:last-child {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+h2, #fileName {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  font-size: 1.5em;
+  border: 0;
+  display: block;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  unicode-bidi: isolate;
+  width: 100%;
+}
+
+#fileName:focus {
+  outline: none;
 }
