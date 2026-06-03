@@ -59,6 +59,12 @@
 			<artifactId>javatuples</artifactId>
 			<version>1.2</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv-platform</artifactId>
+			<version>1.5.12</version>
+		</dependency>
 	</dependencies>
 
 	<build>

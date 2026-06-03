@@ -7,21 +7,16 @@ import com.systems.fele.memendex_server.model.Meme;
 import com.systems.fele.memendex_server.model.MemeDetailed;
 import com.systems.fele.memendex_server.model.MemesType;
 import com.systems.fele.memendex_server.model.PaginatedResponse;
+import com.systems.fele.memendex_server.multimedia.MimeTypeService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/memes")

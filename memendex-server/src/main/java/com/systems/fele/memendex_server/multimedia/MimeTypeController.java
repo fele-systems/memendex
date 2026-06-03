@@ -1,4 +1,4 @@
-package com.systems.fele.memendex_server.meme;
+package com.systems.fele.memendex_server.multimedia;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
