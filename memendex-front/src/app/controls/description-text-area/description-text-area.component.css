@@ -29,7 +29,7 @@
 .grow-wrap > textarea,
 .grow-wrap::after {
   /* Identical styling required!! */
-  border: 1px solid black;
+  /* border: 1px solid black; */
   padding: 0.5rem;
   font: inherit;
 

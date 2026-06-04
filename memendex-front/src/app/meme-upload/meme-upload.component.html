@@ -1,52 +1,52 @@
-<form (ngSubmit)="submit()">
-  <div class="form-group">
-    <label for="file">File: </label>
-    <input
-      (change)="onFileSelected($event)"
-      class="file-input"
-      type="file"
-      [formControl]="fileFormControl"
-    />
+<div class="container-fluid">
+
+  <div class="row justify-content-center">
+    <button id="expand-icon" type="button" class="btn" (click)="toggleDialog($event)">></button>
   </div>
 
-  <div class="form-group">
-    <label for="link">Bookmark: </label>
-    <input
-      (change)="onLinkChanged($event)"
-      type="url"
-      [formControl]="link"
-      name="link"
-    />
-  </div>
+  @if (uploadDialogOpen()) {
+  <form (ngSubmit)="submit()" class="container col-lg-6 offset-lg-3 justify-content-center">
+    <div class="mb-3">
+      <label class="form-label" for="fileFormControl">File</label>
+      <input class="form-control" type="file" (change)="onFileSelected($event)" [formControl]="fileFormControl" />
+    </div>
 
-  <div class="form-group">
-    <label for="title">Title (for note): </label>
-    <input
-      (change)="onTitleChanged($event)"
-      type="text"
-      [formControl]="title"
-      name="title"
-    />
-  </div>
+    <div class="mb-3">
+      <label class="form-label" for="link">Link (for bookmark)</label>
+      <input class="form-control" type="url" name="link" (change)="onLinkChanged($event)" [formControl]="link" />
+    </div>
 
-  @if (error) {
+    <div class="mb-3">
+      <div class="form-group">
+        <label class="form-label" for="title">Title (for note)</label>
+        <input class="form-control" type="text" name="title" (change)="onTitleChanged($event)" [formControl]="title" />
+      </div>
+
+    </div>
+    @if (error) {
     <p class="error">{{ error }}</p>
+    }
+
+    <div class="mb-3">
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label class="form-control-plaintext" for="description">Description</label>
+        </div>
+
+        <div class="col-auto">
+          <input type="button" value="Autofill" title="Autofill description based on file name"
+            class="btn btn-outline-secondary btn-sm" (click)="autoFillDescription(true)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <app-description-text-area [formControl]="description" name="description"></app-description-text-area>
+    </div>
+
+    <div class="mb-3">
+      <input class="btn btn-primary" type="submit" value="Upload!" />
+    </div>
+  </form>
   }
-
-  <div class="form-group">
-    <label for="description">Description: </label>
-    <input
-      type="button"
-      (click)="autoFillDescription(true)"
-      value="Autofill"
-      title="Autofill description based on file name"
-    />
-    <app-description-text-area
-      [formControl]="description"
-      name="description"
-    ></app-description-text-area>
-    <p class="error">Please fill this field</p>
-  </div>
-
-  <input type="submit" value="Upload!" />
-</form>
+</div>
