@@ -1,7 +1,7 @@
 <div class="container-fluid">
 
   <div class="row justify-content-center">
-    <button id="expand-icon" type="button" class="btn" (click)="toggleDialog($event)">></button>
+    <button id="expand-icon" type="button" (click)="toggleDialog($event)">></button>
   </div>
 
   @if (uploadDialogOpen()) {
@@ -48,5 +48,7 @@
       <input class="btn btn-primary" type="submit" value="Upload!" />
     </div>
   </form>
+  <hr>
   }
+  
 </div>

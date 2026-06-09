@@ -7,5 +7,6 @@
 #expand-icon {
   writing-mode: vertical-rl; /* Vertical, right-to-left */
   height: 25px;
-  background-color: rgb(238, 239, 240);
+  background-color: var(--bs-light-border-subtle);
+  border: 0
 }

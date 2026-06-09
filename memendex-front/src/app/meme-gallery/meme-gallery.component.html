@@ -12,7 +12,7 @@
 </div>
 
 <p>{{ memes.length }} memes</p>
-<section class="meme-gallery">
+<section class="meme-gallery row md-2 g-2">
   @for (meme of memes; track meme.id) {
     <app-meme-preview [meme]="meme" (select)="onSelectMeme(meme)" />
   }

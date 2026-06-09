@@ -1,4 +1,4 @@
-<main class="main">
+<main class="vh-100 d-flex flex-column">
   
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -11,10 +11,8 @@
   </nav>
   <app-meme-upload (memeUploaded)="onMemeUploaded($event)" />
   
-  <br>
-
-  <div class="gallery-details-grid">
-    <div class="gallery-view">
+  <div class="gallery-details-grid overflow-y-auto">
+    <div class="gallery-view overflow-y-auto">
       <!-- [totalCount]="totalMemes"
         [pageSize]="defaultPageSize"
         [currentPage]="1" -->
@@ -24,13 +22,13 @@
         (requestPage)="fetchMemes(defaultPageSize, $event)"
       />
     </div>
-    <div class="details-view">
-      <app-meme-details
-        [meme]="selectedMeme"
-        (memeUpdated)="memeUpdated($event)"
-        (memeDeleted)="memeDeleted($event)"
-      />
-    </div>
+    
+    <app-meme-details
+      [meme]="selectedMeme"
+      (memeUpdated)="memeUpdated($event)"
+      (memeDeleted)="memeDeleted($event)"
+    />
+    
   </div>
 </main>
 

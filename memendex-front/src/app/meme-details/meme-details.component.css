@@ -1,3 +1,7 @@
+#details {
+  box-shadow: 0px 0px 5px black;
+}
+
 .image-container {
   width: 100%;
   display: flexbox;
