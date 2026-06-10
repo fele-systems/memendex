@@ -11,23 +11,24 @@
   </nav>
   <app-meme-upload (memeUploaded)="onMemeUploaded($event)" />
   
-  <div class="gallery-details-grid overflow-y-auto">
-    <div class="gallery-view overflow-y-auto">
-      <!-- [totalCount]="totalMemes"
-        [pageSize]="defaultPageSize"
-        [currentPage]="1" -->
-      <app-meme-gallery
-        [data]="memes()"
-        (select)="onSelectMeme($event)"
-        (requestPage)="fetchMemes(defaultPageSize, $event)"
-      />
+  <div class="gallery-details-grid h-100 overflow-hidden">
+    <div class="row h-100">
+      <div class="col-md-9 h-100 overflow-y-auto">
+        <app-meme-gallery
+          [data]="memes()"
+          (select)="onSelectMeme($event)"
+          (requestPage)="fetchMemes(defaultPageSize, $event)"
+        />
+      </div>
+
+      <div class="col-md-3 h-100 overflow-y-auto">
+        <app-meme-details
+          [meme]="selectedMeme"
+          (memeUpdated)="memeUpdated($event)"
+          (memeDeleted)="memeDeleted($event)"
+        />
+      </div>
     </div>
-    
-    <app-meme-details
-      [meme]="selectedMeme"
-      (memeUpdated)="memeUpdated($event)"
-      (memeDeleted)="memeDeleted($event)"
-    />
     
   </div>
 </main>
