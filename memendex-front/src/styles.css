@@ -2,3 +2,11 @@
 .error {
   color: red;
 }
+
+[data-bs-theme="light"] {
+  
+}
+
+[data-bs-theme="dark"] {
+
+}
