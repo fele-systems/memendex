@@ -1,44 +1,46 @@
-@if (meme()) {
-  <form (ngSubmit)="submitForm($event.submitter.id)">
-    <div class="image-container">
-      @if (meme()!.type === "file") {
-        @if (hasThumbnail()) {
-          <img src="/api/memes/{{ meme()!.id }}/preview" />
-        } @else {
-          <span class="fiv-cla fiv-icon-{{ meme()!.extension }}"></span>
+<div id="details" class="h-100">
+  @if (meme()) {
+    <form (ngSubmit)="submitForm($event.submitter.id)">
+      <div class="image-container">
+        @if (meme()!.type === "file") {
+          @if (hasThumbnail()) {
+            <img src="/api/memes/{{ meme()!.id }}/preview" />
+          } @else {
+            <span class="fiv-cla fiv-icon-{{ meme()!.extension }}"></span>
+          }
         }
+      </div>
+
+      @if (meme()!.type === "link") {
+        <a target="_blank" href="{{ meme()!.fileName }}">Open link</a>
+      } @else {
+        <a href="/api/memes/{{ meme()!.id }}/download">Download file</a>
       }
+
+      <h2 (click)="enableFileNameEdit($event)">{{ meme()!.fileName }}</h2>
+
+      <label for="description">Description:</label>
+      <app-description-text-area
+        name="description"
+        [formControl]="description"
+      ></app-description-text-area>
+
+      <br />
+
+      <label for="tags">Tags:</label>
+      <app-tags-input name="tags" [formControl]="tags"></app-tags-input>
+
+      <br />
+
+      <div class="actions-container">
+        <input type="submit" id="edit" value="Edit" />
+        <input type="submit" id="delete" value="Delete" />
+      </div>
+    </form>
+  } @else {
+    <div class="image-container">
+      <img src="/meme-placeholder.jpg" />
     </div>
-
-    @if (meme()!.type === "link") {
-      <a target="_blank" href="{{ meme()!.fileName }}">Open link</a>
-    } @else {
-      <a href="/api/memes/{{ meme()!.id }}/download">Download file</a>
-    }
-
-    <h2>{{ meme()!.fileName }}</h2>
-
-    <label for="description">Description:</label>
-    <app-description-text-area
-      name="description"
-      [formControl]="description"
-    ></app-description-text-area>
-
-    <br />
-
-    <label for="tags">Tags:</label>
-    <app-tags-input name="tags" [formControl]="tags"></app-tags-input>
-
-    <br />
-
-    <div class="actions-container">
-      <input type="submit" id="edit" value="Edit" />
-      <input type="submit" id="delete" value="Delete" />
-    </div>
-  </form>
-} @else {
-  <div class="image-container">
-    <img src="/meme-placeholder.jpg" />
-  </div>
-  <p>Select a meme from the left panel to see or edit its details</p>
-}
+    <p>Select a meme from the left panel to see or edit its details</p>
+  }
+</div>

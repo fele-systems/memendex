@@ -1,12 +1,11 @@
-<form (ngSubmit)="submit()">
-  <div class="form-group">
-    <label for="query">Query: </label>
+<form (ngSubmit)="submit()" class="d-flex" role="search">
     <input
+      placeholder="Query"
+      class="form-control me-2"
+      type="search"
       name="query"
       [formControl]="query"
-      (keydown)="onQueryChanged($event)"
+      (input)="onInput($event)"
     />
-  </div>
-
-  <input type="submit" value="Search!" />
+    <input class="btn btn-outline-success" type="submit" value="Search!" />
 </form>

@@ -41,7 +41,7 @@ export class MemePreviewComponent implements OnInit {
     } else if (this.meme.type === "note") {
       return "md";
     } else {
-      return undefined;
+      return this.meme.extension;
     }
   });
 

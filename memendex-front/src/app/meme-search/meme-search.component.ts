@@ -48,4 +48,10 @@ export class MemeSearchComponent {
       }
     }
   }
+
+  onInput(event: Event) {
+    if ((event.target as HTMLInputElement).value === '') {
+      this.resetSearch.emit();
+    }
+  }
 }

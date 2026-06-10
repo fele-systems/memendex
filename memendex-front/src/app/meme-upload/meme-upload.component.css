@@ -1,12 +1,12 @@
-.form-group label {
+/* .form-group label {
   width: 120px;
   display: inline-block;
   margin: 5px 0;
-}
+} */
 
-form {
-  margin: 0 auto;
-  width: 400px;
-  border-style: double;
-  padding: 10px;
+#expand-icon {
+  writing-mode: vertical-rl; /* Vertical, right-to-left */
+  height: 25px;
+  background-color: var(--bs-light-border-subtle);
+  border: 0
 }

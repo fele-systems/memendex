@@ -1,35 +1,35 @@
-<main class="main">
-  <h1>Memendex - Your meme index</h1>
-
-  <div class="upload-center-container">
-    <app-meme-upload (memeUploaded)="onMemeUploaded($event)" />
-    <app-meme-search
-      (searchCompleted)="onSearchCompleted($event)"
-      (resetSearch)="onSearchReseted()"
-    />
-  </div>
-
-  <br />
-  <hr />
-
-  <div class="gallery-details-grid">
-    <div class="gallery-view">
-      <!-- [totalCount]="totalMemes"
-        [pageSize]="defaultPageSize"
-        [currentPage]="1" -->
-      <app-meme-gallery
-        [data]="memes()"
-        (select)="onSelectMeme($event)"
-        (requestPage)="fetchMemes(defaultPageSize, $event)"
+<main class="vh-100 d-flex flex-column">
+  
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Memendex - Your meme index</a>
+      <app-meme-search
+        (searchCompleted)="onSearchCompleted($event)"
+        (resetSearch)="onSearchReseted()"
       />
     </div>
-    <div class="details-view">
-      <app-meme-details
-        [meme]="selectedMeme"
-        (memeUpdated)="memeUpdated($event)"
-        (memeDeleted)="memeDeleted($event)"
-      />
+  </nav>
+  <app-meme-upload (memeUploaded)="onMemeUploaded($event)" />
+  
+  <div class="gallery-details-grid h-100 overflow-hidden">
+    <div class="row h-100">
+      <div class="col-md-9 h-100 overflow-y-auto">
+        <app-meme-gallery
+          [data]="memes()"
+          (select)="onSelectMeme($event)"
+          (requestPage)="fetchMemes(defaultPageSize, $event)"
+        />
+      </div>
+
+      <div class="col-md-3 h-100 overflow-y-auto">
+        <app-meme-details
+          [meme]="selectedMeme"
+          (memeUpdated)="memeUpdated($event)"
+          (memeDeleted)="memeDeleted($event)"
+        />
+      </div>
     </div>
+    
   </div>
 </main>
 

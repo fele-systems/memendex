@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   Output,
+  signal,
   ViewChild,
 } from "@angular/core";
 import {
@@ -38,6 +39,8 @@ export class MemeUploadComponent {
   description = new FormControl<string>("");
   /** Error reporter variable */
   error?: string;
+
+  uploadDialogOpen = signal<boolean>(false);
 
   /** Signal for when a Meme submit is completed sucessfuly */
   @Output() memeUploaded = new EventEmitter<Meme>();
@@ -164,6 +167,14 @@ export class MemeUploadComponent {
       if (overwrite || !this.description.value) {
         this.description.setValue(this.file?.name || "");
       }
+    }
+  }
+
+  toggleDialog(button: MouseEvent) {
+    if (this.uploadDialogOpen()) {
+      this.uploadDialogOpen.set(false);
+    } else {
+      this.uploadDialogOpen.set(true);
     }
   }
 }

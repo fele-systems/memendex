@@ -1,14 +1,18 @@
-<article (click)="onSelectMeme()">
-  <div class="image-container">
+<div class="card h-100" (click)="onSelectMeme()">
+  <div class="image-container ">
     @if (hasThumbnail()) {
       <img
+        class="card-img-top"
         src="/api/memes/{{ meme.id }}/thumbnail"
         alt="{{ meme.description }}"
         title="{{ meme.description }}"
       />
     } @else {
-      <span class="fiv-cla fiv-icon-{{ memeIconExtension() }}"></span>
+      <span class="card-img-top fiv-cla fiv-icon-{{ memeIconExtension() }}"></span>
     }
   </div>
-  <p>{{ meme.fileName }}</p>
-</article>
+  <hr>
+  <div class="card-body">
+    <h6 class="card-title">{{ meme.fileName }}</h6>
+  </div>
+</div>
